@@ -37,7 +37,9 @@
       <div class="col-md-5 p-lg-5 mx-auto my-5">
         <h1 class="display-4 font-weight-normal">Create your own Avatar!</h1>
         <p class="lead font-weight-normal">Create your own personalized avatar with AI</p>
-        <a class="btn btn-warning " href="https://localhost/avatario/avatar">Create NOW</a>
+        <form action="createAvatar.php" method="get">
+          <input id="avatar-submit" type="submit" class="btn btn-warning ">Create NOW</input>
+        </form>
       </div>
       <div>PATATIFICO</div>
     </div>
