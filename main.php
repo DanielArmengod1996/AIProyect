@@ -43,6 +43,7 @@
       </div>
       <div>PATATIFICO</div>
     </div>
+
     <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light">
       <div class="col-md-5 p-lg-5 mx-auto my-5">
         <h1 class="display-4 font-weight-normal">Create your own Avatar!</h1>
@@ -103,11 +104,13 @@
     <script src="bootstrap.min.js"></script>
     <script src="holder.min.js"></script>
     <script>
+      
       Holder.addTheme('thumb', {
         bg: '#55595c',
         fg: '#eceeef',
         text: 'Thumbnail'
       });
+
     </script>
   
 
