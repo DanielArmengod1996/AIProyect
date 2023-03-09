@@ -47,8 +47,13 @@
 
         // Carga la imagen que deseas procesar
         $imagePath = './haarphp/examples/modelface.jpg';
-        $image = image($imagePath);
+        $image = imagecreatefrompng($imagePath);
 
+        // Realiza algún procesamiento en la imagen, como cambiar su tamaño o agregar texto
+        
+        // Muestra la imagen procesada al usuario
+        header('Content-Type: image/png');
+        imagepng($image);
         // Carga el archivo XML de cascada de Haar previamente entrenado
         $detector = new HaarDetector();
         $detector->loadXML($cascadeFilePath);
