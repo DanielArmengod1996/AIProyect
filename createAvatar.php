@@ -37,6 +37,35 @@
 	<div id="avatar-container">
 		<form id="avatar-form" method="POST" enctype="multipart/form-data">
 			<img id="avatar-image" class="img-thumbnail rounded float-left">
+
+      <?php
+        // Carga la librería Haar PHP Image Feature Detection
+        require_once('HaarDetector.php');
+
+        // Ruta del archivo XML de cascada de Haar para la detección de rostros
+        $cascadeFilePath = 'haarcascade_frontalface_default.xml';
+
+        // Carga la imagen que deseas procesar
+        $imagePath = 'ruta/de/la/imagen.jpg';
+        $image = imagecreatefromjpeg($imagePath);
+
+        // Carga el archivo XML de cascada de Haar previamente entrenado
+        $detector = new HaarDetector();
+        $detector->loadXML($cascadeFilePath);
+
+        // Detecta las caras en la imagen
+        $faces = $detector->detect($image);
+
+        // Dibuja un rectángulo alrededor de las caras detectadas
+        foreach($faces as $face) {
+            $color = imagecolorallocate($image, 0, 255, 0); // Define el color del rectángulo como verde
+            imagerectangle($image, $face['x'], $face['y'], $face['x'] + $face['width'], $face['y'] + $face['height'], $color);
+        }
+
+        // Muestra la imagen procesada
+        header('Content-Type: image/jpeg');
+        imagejpeg($image);
+      ?>
 			<div class="custom-file">
 				<input type="file" class="custom-file-input" id="avatar-file" name="avatar-file" accept="image/*">
 				<label class="custom-file-label" for="avatar-file">Choose file</label>
