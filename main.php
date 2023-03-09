@@ -38,7 +38,7 @@
         <h1 class="display-4 font-weight-normal">Create your own Avatar!</h1>
         <p class="lead font-weight-normal">Create your own personalized avatar with AI</p>
         <form action="createAvatar.php" method="get">
-          <input id="avatar-submit" type="submit" class="btn btn-warning ">Create NOW</input>
+          <input id="avatar-submit" type="submit" value="Create NOW" class="btn btn-warning "/>
         </form>
       </div>
       <div>PATATIFICO</div>
@@ -104,7 +104,7 @@
     <script src="bootstrap.min.js"></script>
     <script src="holder.min.js"></script>
     <script>
-      
+
       Holder.addTheme('thumb', {
         bg: '#55595c',
         fg: '#eceeef',
