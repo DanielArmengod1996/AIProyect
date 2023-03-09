@@ -23,12 +23,7 @@
     <nav class="site-header sticky-top py-1">
       <div class="container d-flex flex-column flex-md-row justify-content-between">
         <a class="py-2" href="https://getbootstrap.com/docs/4.0/examples/product/#">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="d-block mx-auto">
-            <circle cx="10" cy="10" r="5" stroke="black" stroke-width="2" fill="yellow" />
-            <circle cx="5" cy="5" r="1" fill="black" />
-            <circle cx="20" cy="5" r="1" fill="black" />
-            <path d="M 10 20 Q 30 30 20 20" stroke="black" stroke-width="4" fill="none" />
-          </svg>
+          📸
         </a>
         <a class="py-2 d-none d-md-inline-block" href="https://getbootstrap.com/docs/4.0/examples/product/#">Home</a>
         <a class="py-2 d-none d-md-inline-block" href="https://getbootstrap.com/docs/4.0/examples/product/#">Create Avatar</a>
@@ -58,12 +53,7 @@
     <footer class="container py-5">
       <div class="row">
         <div class="col-12 col-md">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="d-block mb-2">
-            <circle cx="50" cy="50" r="45" stroke="black" stroke-width="2" fill="yellow" />
-            <circle cx="30" cy="35" r="8" fill="black" />
-            <circle cx="70" cy="35" r="8" fill="black" />
-            <path d="M 30 70 Q 50 90 70 70" stroke="black" stroke-width="4" fill="none" />
-          </svg>
+          📸
           <small class="d-block mb-3 text-muted">© 2022-2023</small>
         </div>
         <div class="col-6 col-md">
