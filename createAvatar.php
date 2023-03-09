@@ -41,9 +41,7 @@
 				<input type="file" class="custom-file-input" id="avatar-file" name="avatar-file" accept="image/*">
 				<label class="custom-file-label" for="avatar-file">Choose file</label>
 			</div>
-			<form action="createAvatar.php" method="get">
-				<input id="avatar-submit" type="submit" class="btn btn-primary">Create Avatar</input>
-			</form>
+			<button id="avatar-submit" type="submit" class="btn btn-primary">Create Avatar</button>
 		</form>
 	</div>
     </div>
