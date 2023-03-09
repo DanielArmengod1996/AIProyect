@@ -33,7 +33,7 @@
       </div>
     </nav>
 
-    <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light">
+    <div class="position-relative overflow-hidden p-5 p-md-5 m-md-3 text-center bg-light">
 	<div id="avatar-container">
 		<form id="avatar-form" method="POST" enctype="multipart/form-data">
 			<img id="avatar-image" >
