@@ -45,26 +45,6 @@
         // Ruta del archivo XML de cascada de Haar para la detección de rostros
         $cascadeFilePath = './haarphp/cascades/haarcascade_frontalface_alt.xml';
 
-        // Carga la imagen que deseas procesar
-        $imagePath = './haarphp/examples/modelface.jpg';
-        $image = image($imagePath);
-
-        // Carga el archivo XML de cascada de Haar previamente entrenado
-        $detector = new HaarDetector();
-        $detector->loadXML($cascadeFilePath);
-
-        // Detecta las caras en la imagen
-        $faces = $detector->detect($image);
-
-        // Dibuja un rectángulo alrededor de las caras detectadas
-        foreach($faces as $face) {
-            $color = imagecolorallocate($image, 0, 255, 0); // Define el color del rectángulo como verde
-            imagerectangle($image, $face['x'], $face['y'], $face['x'] + $face['width'], $face['y'] + $face['height'], $color);
-        }
-
-        // Muestra la imagen procesada
-        header('Content-Type: image/jpeg');
-        imagejpeg($image);
       ?>
 			<div class="custom-file">
 				<input type="file" class="custom-file-input" id="avatar-file" name="avatar-file" accept="image/*">
