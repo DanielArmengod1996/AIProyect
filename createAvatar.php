@@ -43,7 +43,7 @@
         require_once('./haarphp/src/HaarDetector.php');
 
         // Ruta del archivo XML de cascada de Haar para la detección de rostros
-        $cascadeFilePath = './haarp/cascades/haarcascade_frontalface_alt.xml';
+        $cascadeFilePath = '../haarphp/cascades/haarcascade_frontalface_alt.xml';
 
         // Carga la imagen que deseas procesar
         $imagePath = './haarphp/examples/modelface.jpg';
