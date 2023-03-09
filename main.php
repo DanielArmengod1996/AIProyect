@@ -42,7 +42,6 @@
         <a class="btn btn-warning " href="https://localhost/avatario/avatar">Create NOW</a>
       </div>
       <div>PATATIFICO</div>
-      <div>PATATIFICO</div>
     </div>
 
     <div class="d-md-flex flex-md-equal w-100 my-md-3 pl-md-3">
