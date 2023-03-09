@@ -36,7 +36,7 @@
     <div class="position-relative overflow-hidden p-5 p-md-5 m-md-3 text-center bg-light">
 	<div id="avatar-container">
 		<form id="avatar-form" method="POST" enctype="multipart/form-data">
-			<img id="avatar-image" >
+			<img id="avatar-image" class="img-thumbnail rounded float-left">
 			<div class="custom-file">
 				<input type="file" class="custom-file-input" id="avatar-file" name="avatar-file" accept="image/*">
 				<label class="custom-file-label" for="avatar-file">Choose file</label>
