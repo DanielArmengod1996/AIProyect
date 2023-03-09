@@ -45,6 +45,11 @@
         // Ruta del archivo XML de cascada de Haar para la detección de rostros
         $cascadeFilePath = './haarphp/cascades/haarcascade_frontalface_alt.xml';
 
+        // Carga la imagen que deseas procesar
+        $imagePath = './haarphp/examples/modelface.jpg';
+        $image = image($imagePath);
+
+       
       ?>
 			<div class="custom-file">
 				<input type="file" class="custom-file-input" id="avatar-file" name="avatar-file" accept="image/*">
