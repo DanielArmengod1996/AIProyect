@@ -1,3 +1,2 @@
 RewriteEngine on
-RewriteRule ^home$ main.php [L]
-RewriteRule ^createAvatar$ createAvatar.php [L]
+RewriteRule ^home$ /main.php [L]
