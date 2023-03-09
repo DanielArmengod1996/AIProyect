@@ -47,7 +47,7 @@
 
         // Carga la imagen que deseas procesar
         $imagePath = 'ruta/de/la/imagen.jpg';
-        $image = imagecreatefromjpeg($imagePath);
+        $image = image($imagePath);
 
         // Carga el archivo XML de cascada de Haar previamente entrenado
         $detector = new HaarDetector();
