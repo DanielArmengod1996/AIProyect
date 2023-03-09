@@ -25,7 +25,7 @@
         <a class="py-2" href="https://getbootstrap.com/docs/4.0/examples/product/#">
           📸
         </a>
-        <a class="py-2 d-none d-md-inline-block" href="https://getbootstrap.com/docs/4.0/examples/product/#">Home</a>
+        <a class="py-2 d-none d-md-inline-block" href="https://yonuncajuego.com/main.php">Home</a>
         <a class="py-2 d-none d-md-inline-block" href="https://getbootstrap.com/docs/4.0/examples/product/#">Create Avatar</a>
         <a class="py-2 d-none d-md-inline-block" href="https://getbootstrap.com/docs/4.0/examples/product/#">About Us</a>
         <a class="py-2 d-none d-md-inline-block" href="https://getbootstrap.com/docs/4.0/examples/product/#">Login</a>
@@ -45,7 +45,7 @@
 		</form>
 	</div>
     </div>
-	
+
     <footer class="container py-5">
       <div class="row">
         <div class="col-12 col-md">
