@@ -46,7 +46,7 @@
         $cascadeFilePath = './haarphp/cascades/haarcascade_frontalface_alt.xml';
 
         // Carga la imagen que deseas procesar
-        $imagePath = './haarphp/examples/modelface.jpg';
+        $imagePath = 'haarphp/examples/modelface.jpg';
         $image = imagecreatefrompng($imagePath);
 
         // Realiza algún procesamiento en la imagen, como cambiar su tamaño o agregar texto
