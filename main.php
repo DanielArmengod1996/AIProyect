@@ -61,39 +61,45 @@
         <div class="col-6 col-md">
           <h5>Features</h5>
           <ul class="list-unstyled text-small">
-            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">Cool stuff</a></li>
-            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">Random feature</a></li>
-            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">Team feature</a></li>
-            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">Stuff for developers</a></li>
-            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">Another one</a></li>
-            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">Last time</a></li>
+            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">1. something</a></li>
+            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">2. something</a></li>
+            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">3. somtething</a></li>
+            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">4. somtething</a></li>
+            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">5. somtething</a></li>
+            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">6. somtething</a></li>
           </ul>
         </div>
         <div class="col-6 col-md">
           <h5>Resources</h5>
           <ul class="list-unstyled text-small">
-            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">Resource</a></li>
-            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">Resource name</a></li>
-            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">Another resource</a></li>
-            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">Final resource</a></li>
+            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">1. something</a></li>
+            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">2. something</a></li>
+            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">3. somtething</a></li>
+            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">4. somtething</a></li>
+            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">5. somtething</a></li>
+            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">6. somtething</a></li>
           </ul>
         </div>
         <div class="col-6 col-md">
           <h5>Resources</h5>
           <ul class="list-unstyled text-small">
-            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">Business</a></li>
-            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">Education</a></li>
-            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">Government</a></li>
-            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">Gaming</a></li>
+            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">1. something</a></li>
+            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">2. something</a></li>
+            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">3. somtething</a></li>
+            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">4. somtething</a></li>
+            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">5. somtething</a></li>
+            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">6. somtething</a></li>
           </ul>
         </div>
         <div class="col-6 col-md">
           <h5>About</h5>
           <ul class="list-unstyled text-small">
-            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">Team</a></li>
-            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">Locations</a></li>
-            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">Privacy</a></li>
-            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">Terms</a></li>
+            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">1. something</a></li>
+            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">2. something</a></li>
+            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">3. somtething</a></li>
+            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">4. somtething</a></li>
+            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">5. somtething</a></li>
+            <li><a class="text-muted" href="https://getbootstrap.com/docs/4.0/examples/product/#">6. somtething</a></li>
           </ul>
         </div>
       </div>
