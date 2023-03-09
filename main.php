@@ -22,14 +22,14 @@
 
     <nav class="site-header sticky-top py-1">
       <div class="container d-flex flex-column flex-md-row justify-content-between">
-        <a class="py-2" href="https://getbootstrap.com/docs/4.0/examples/product/#">
+        <a class="py-2" href="https://yonuncajuego.com">
           📸
         </a>
         <a class="py-2 d-none d-md-inline-block" href="https://yonuncajuego.com/main.php">Home</a>
-        <a class="py-2 d-none d-md-inline-block" href="https://getbootstrap.com/docs/4.0/examples/product/#">Create Avatar</a>
-        <a class="py-2 d-none d-md-inline-block" href="https://getbootstrap.com/docs/4.0/examples/product/#">About Us</a>
-        <a class="py-2 d-none d-md-inline-block" href="https://getbootstrap.com/docs/4.0/examples/product/#">Login</a>
-        <a class="py-2 d-none d-md-inline-block" href="https://getbootstrap.com/docs/4.0/examples/product/#">Register</a>
+        <a class="py-2 d-none d-md-inline-block" href="https://yonuncajuego.com">Create Avatar</a>
+        <a class="py-2 d-none d-md-inline-block" href="https://yonuncajuego.com">About Us</a>
+        <a class="py-2 d-none d-md-inline-block" href="https://yonuncajuego.com">Login</a>
+        <a class="py-2 d-none d-md-inline-block" href="https://yonuncajuego.com">Register</a>
       </div>
     </nav>
 
