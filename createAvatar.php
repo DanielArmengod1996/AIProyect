@@ -51,6 +51,8 @@
           // Crea un objeto HaarDetector
           $detector = new HaarDetector($cascadeFilePath);
 
+          // Detecta la cara en la imagen
+          $faces = $detector->detect($image);
 
           // Verifica si se detectó una cara
           if (!empty($faces)) {
