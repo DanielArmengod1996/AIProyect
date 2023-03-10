@@ -38,7 +38,7 @@
 	<div id="avatar-container">
       <?php if ($error) echo "<p id='error'>$error</p>"; ?>
 
-      <form method='POST' id='imgForm' enctype='multipart/form-data'>
+      <form class="custom-file" method='POST' id='imgForm' enctype='multipart/form-data'>
           <label for='img_upload'>Image File: </label>
           <input type='file' name='img_upload' id='img_upload'>
           <input class="custom-file-input" type='submit' value="Upload and Detect" name='upload_form_submitted'>
