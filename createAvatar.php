@@ -35,7 +35,7 @@
     <div class="position-relative overflow-hidden p-5 p-md-5 m-md-3 text-center bg-light">
 	<div id="avatar-container">
 		<form id="avatar-form" method="POST" enctype="multipart/form-data">
-			<img id="avatar-image" class="img-thumbnail rounded float-left">
+			<img id="avatar-image" src="haarphp/examples/modelface.jpg" class="img-thumbnail rounded float-left">
 
       <?php
           // Carga la librería Haar PHP Image Feature Detection
