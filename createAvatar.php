@@ -53,7 +53,7 @@
         
         // Muestra la imagen procesada al usuario
         header('Content-Type: image/png');
-        imagepng($image);
+        echo $image;
         
       ?>
 			<div class="custom-file">
