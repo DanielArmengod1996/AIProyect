@@ -41,7 +41,7 @@
       <form class="custom-file" method='POST' id='imgForm' enctype='multipart/form-data'>
           <label for='img_upload'>Image File: </label>
           <input type='file' name='img_upload' id='img_upload'>
-          <input class="custom-file-input" type='submit' value="Upload and Detect" name='upload_form_submitted'>
+          <input type='submit' value="Upload and Detect" name='upload_form_submitted'>
       </form>
 
       <h2>Original Image</h2>
