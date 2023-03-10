@@ -38,21 +38,29 @@
 			<img id="avatar-image" class="img-thumbnail rounded float-left">
 
       <?php
-        // Carga la librería Haar PHP Image Feature Detection
-        require_once('haarphp/src/HaarDetector.php');
+          // Carga la librería Haar PHP Image Feature Detection
+          require_once('haarphp/src/HaarDetector.php');
 
-        // Ruta del archivo XML de cascada de Haar para la detección de rostros
-        $cascadeFilePath = 'haarphp/cascades/haarcascade_frontalface_alt.xml';
+          // Ruta del archivo XML de cascada de Haar para la detección de rostros
+          $cascadeFilePath = 'haarphp/cascades/haarcascade_frontalface_alt.xml';
 
-        // Carga la imagen que deseas procesar
-        $imagePath = 'haarphp/examples/modelface.jpg';
-        $image = imagecreatefromjpeg($imagePath);
+          // Carga la imagen que deseas procesar
+          $imagePath = 'haarphp/examples/modelface.jpg';
+          $image = imagecreatefromjpeg($imagePath);
 
-        // Realiza algún procesamiento en la imagen, como cambiar su tamaño o agregar texto
+          // Crea un objeto HaarDetector
+          $detector = new HaarDetector($cascadeFilePath);
 
-        // Muestra la imagen procesada al usuario
-        header('Content-Type: image/jpeg');
-        imagejpeg($image);
+          // Detecta la cara en la imagen
+          $faces = $detector->detect($image);
+
+          // Verifica si se detectó una cara
+          if (!empty($faces)) {
+              echo "La imagen contiene una cara";
+          } else {
+              echo "La imagen no contiene una cara";
+          }
+
 
       ?>
 			<div class="custom-file">
