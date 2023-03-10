@@ -45,7 +45,7 @@
           $cascadeFilePath = 'haarphp/cascades/haarcascade_frontalface_alt.xml';
 
           // Carga la imagen que deseas procesar
-          $imagePath = 'haarphp/examples/modelface.jpg';
+          $imagePath = 'haarphp/examples/manyfaces.jpg';
           $image = imagecreatefromjpeg($imagePath);
 
           // Crea un objeto HaarDetector
