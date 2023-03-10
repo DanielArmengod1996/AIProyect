@@ -43,6 +43,17 @@
           <input type='file' name='img_upload' id='img_upload'>
           <input type='submit' value="Upload and Detect" name='upload_form_submitted'>
       </form>
+
+      <h2>Original Image</h2>
+      <?php echo $origImageHtml; ?>
+
+      <h2>Detected Features ( <?php echo $numFeatures; ?> )</h2>
+      <ul style="list-style-type:none">
+      <?php foreach ($detectedImagesHtml as $img) { ?>
+          <li><?php echo $img; ?></li>
+      <?php } ?>
+      </ul>
+      
 			<div class="custom-file">
 				<input type="file" class="custom-file-input" id="avatar-file" name="avatar-file" accept="image/*">
 				<label class="custom-file-label" for="avatar-file">Choose file</label>
