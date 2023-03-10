@@ -47,6 +47,8 @@
 
         // Carga la imagen que deseas procesar
         $imagePath = 'haarphp/examples/modelface.jpg';
+        $image = imagecreatefrompng($imagePath);
+
 
         
       ?>
