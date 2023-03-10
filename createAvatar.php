@@ -53,7 +53,6 @@
         
         // Muestra la imagen procesada al usuario
         header('Content-Type: image/jpg');
-        echo $image
         imagepng($image);
         
       ?>
