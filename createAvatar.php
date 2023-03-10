@@ -52,8 +52,9 @@
         // Realiza algún procesamiento en la imagen, como cambiar su tamaño o agregar texto
         
         // Muestra la imagen procesada al usuario
+        header('Content-Type: image/jpg');
         echo $image
-        
+        imagepng($image);
         
       ?>
 			<div class="custom-file">
