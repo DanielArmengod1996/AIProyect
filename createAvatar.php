@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<?php require dirname(__FILE__).'/haarphp/examples/feature_detection.php'; ?>
+
 <!-- saved from url=(0052)https://getbootstrap.com/docs/4.0/examples/product/# -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     
@@ -34,42 +36,18 @@
 
     <div class="position-relative overflow-hidden p-5 p-md-5 m-md-3 text-center bg-light">
 	<div id="avatar-container">
-		<form id="avatar-form" method="POST" enctype="multipart/form-data">
-			<img id="avatar-image" src="haarphp/examples/modelface.jpg" class="img-thumbnail rounded float-left">
+      <?php if ($error) echo "<p id='error'>$error</p>"; ?>
 
-      <?php
-          // Carga la librería Haar PHP Image Feature Detection
-          require_once('haarphp/src/HaarDetector.php');
-
-          // Ruta del archivo XML de cascada de Haar para la detección de rostros
-          $cascadeFilePath = 'haarphp/cascades/haarcascade_frontalface_alt.xml';
-
-          // Carga la imagen que deseas procesar
-          $imagePath = 'haarphp/examples/manyfaces.jpg';
-          $image = imagecreatefromjpeg($imagePath);
-
-          // Crea un objeto HaarDetector
-          $detector = new HaarDetector($cascadeFilePath);
-
-          // Detecta la cara en la imagen
-          $faces = $detector->detect($image);
-          echo "Número de caras encontradas: " . count($faces);
-          $facesCounted = count($faces);
-          // Verifica si se detectó una cara
-          if ($facesCounted > 0) {
-              echo "La imagen contiene una cara";
-          } else {
-              echo "La imagen no contiene una cara";
-          }
-
-
-      ?>
+      <form method='POST' id='imgForm' enctype='multipart/form-data'>
+          <label for='img_upload'>Image File: </label>
+          <input type='file' name='img_upload' id='img_upload'>
+          <input type='submit' value="Upload and Detect" name='upload_form_submitted'>
+      </form>
 			<div class="custom-file">
 				<input type="file" class="custom-file-input" id="avatar-file" name="avatar-file" accept="image/*">
 				<label class="custom-file-label" for="avatar-file">Choose file</label>
 			</div>
 			<button id="avatar-submit" type="submit" class="btn btn-primary">Create Avatar</button>
-		</form>
 	</div>
     </div>
 
