@@ -47,14 +47,14 @@
 
         // Carga la imagen que deseas procesar
         $imagePath = 'haarphp/examples/modelface.jpg';
-        $image = imagecreatefrompng($imagePath);
+        $image = imagecreatefromjpeg($imagePath);
 
         // Realiza algún procesamiento en la imagen, como cambiar su tamaño o agregar texto
-        
+
         // Muestra la imagen procesada al usuario
-        header('Content-Type: image/jpg');
-        imagejpg($image);
-        
+        header('Content-Type: image/jpeg');
+        imagejpeg($image);
+
       ?>
 			<div class="custom-file">
 				<input type="file" class="custom-file-input" id="avatar-file" name="avatar-file" accept="image/*">
