@@ -53,7 +53,8 @@
 
           // Detecta la cara en la imagen
           $faces = $detector->detect($image);
-          
+          echo "Número de caras encontradas: " . count($faces);
+
           // Verifica si se detectó una cara
           if (!empty($faces)) {
               echo "La imagen contiene una cara";
