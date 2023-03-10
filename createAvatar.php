@@ -39,9 +39,9 @@
       <?php if ($error) echo "<p id='error'>$error</p>"; ?>
 
       <form method='POST' id='imgForm' enctype='multipart/form-data'>
-          <label class="custom-file-input" for='img_upload'>Image File: </label>
+          <label for='img_upload'>Image File: </label>
           <input type='file' name='img_upload' id='img_upload'>
-          <input type='submit' value="Upload and Detect" name='upload_form_submitted'>
+          <input  class="custom-file-input" type='submit' value="Upload and Detect" name='upload_form_submitted'>
       </form>
 
       <h2>Original Image</h2>
