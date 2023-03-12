@@ -109,9 +109,9 @@
             // Check if the avatar-submit button was pressed
             if ($_POST['button-id'] === 'avatar-submit') {
               // Check if an image was uploaded
-              if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+              if (isset($_FILES['img_upload']) && $_FILES['img_upload']['error'] === UPLOAD_ERR_OK) {
                 // Get the image file from the upload
-                $imageFile = $_FILES['image']['tmp_name'];
+                $imageFile = $_FILES['img_upload']['tmp_name'];
             
                 // Initialize the Discord client
                 $client = new Discord\Discord([
