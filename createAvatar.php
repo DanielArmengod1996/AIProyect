@@ -101,35 +101,36 @@
     </footer>
 
           <?php
-            // Get the button element
-            var button = document.getElementById('avatar-submit');
+            require_once 'vendor/autoload.php'; // Include the Discord PHP library
 
-            // Add a click event listener to the button
-            button.addEventListener('click', function() {
-              // Get the image file from the input element
-              var inputFile = document.getElementById('avatar-input').files[0];
-
-              // Create a FormData object and append the image file to it
-              var formData = new FormData();
-              formData.append('image', inputFile);
-
-              // Send a POST request to the server with the FormData
-              fetch('/upload-image.php', {
-                method: 'POST',
-                body: formData
-              })
-              .then(response => {
-                if (response.ok) {
-                  console.log('Image uploaded successfully');
-                } else {
-                  console.error('Error uploading image');
+            // Get the user's Discord channel ID
+            $channelId = 'YOUR_DISCORD_CHANNEL_ID';
+            
+            // Check if the avatar-submit button was pressed
+            if ($_POST['button-id'] === 'avatar-submit') {
+              // Check if an image was uploaded
+              if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+                // Get the image file from the upload
+                $imageFile = $_FILES['image']['tmp_name'];
+            
+                // Initialize the Discord client
+                $client = new Discord\Discord([
+                    'token' => 'YOUR_DISCORD_BOT_TOKEN',
+                ]);
+            
+                // Upload the image to Discord
+                try {
+                    $channel = $client->getChannel($channelId);
+                    $channel->sendFile($imageFile);
+                    echo 'Image sent to Discord channel!';
+                } catch (Exception $e) {
+                    echo 'Error sending image: ' . $e->getMessage();
                 }
-              })
-              .catch(error => {
-                console.error('Error uploading image: ' + error.message);
-              });
-            });
-
+              } else {
+                echo 'Error uploading image: ' . $_FILES['image']['error'];
+              }
+            }
+            
           ?>
     <!-- Bootstrap core JavaScript
     ================================================== -->
