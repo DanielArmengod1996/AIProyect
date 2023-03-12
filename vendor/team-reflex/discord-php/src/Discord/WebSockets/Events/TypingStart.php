@@ -11,35 +11,26 @@
 
 namespace Discord\WebSockets\Events;
 
-use Discord\Parts\Guild\Guild;
 use Discord\Parts\WebSockets\TypingStart as TypingStartPart;
 use Discord\WebSockets\Event;
+use Discord\Helpers\Deferred;
 
 /**
- * @link https://discord.com/developers/docs/topics/gateway-events#typing-start
- *
- * @see \Discord\Parts\WebSockets\TypingStart
- *
- * @since 2.1.3
+ * @see https://discord.com/developers/docs/topics/gateway#typing-start
  */
 class TypingStart extends Event
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
-    public function handle($data)
+    public function handle(Deferred &$deferred, $data): void
     {
-        $typing = $this->factory->part(TypingStartPart::class, (array) $data, true);
+        $typing = $this->factory->create(TypingStartPart::class, $data, true);
 
-        if (isset($data->member)) {
-            /** @var ?Guild */
-            if ($guild = yield $this->discord->guilds->cacheGet($data->guild_id)) {
-                $this->cacheMember($guild->members, (array) $data->member);
-            }
-
+        if (isset($data->member->user)) {
             $this->cacheUser($data->member->user);
         }
 
-        return $typing;
+        $deferred->resolve($typing);
     }
 }

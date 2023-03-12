@@ -25,9 +25,9 @@ Called with an object when an invite is created.
 
    $discord->on(Event::INVITE_DELETE, function (object $invite, Discord $discord) {
        if ($invite instanceof Invite) {
-           // $invite was cached
+           // Invite is present in cache
        }
-       // If $invite was not in cache:
+       // If the invite is not present in the cache:
        else {
            // {
            //     "channel_id": "",

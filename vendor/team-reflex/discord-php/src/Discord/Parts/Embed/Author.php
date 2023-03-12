@@ -16,24 +16,17 @@ use Discord\Parts\Part;
 /**
  * The author of an embed object.
  *
- * @link https://discord.com/developers/docs/resources/channel#embed-object-embed-author-structure
+ * @see https://discord.com/developers/docs/resources/channel#embed-object-embed-author-structure
  *
- * @since 4.0.3
- *
- * @property      string      $name           The name of the author.
- * @property      string|null $url            The URL to the author.
- * @property      string|null $icon_url       The source of the author icon. Must be https.
- * @property-read string|null $proxy_icon_url A proxied version of the icon url.
+ * @property string      $name           The name of the author.
+ * @property string|null $url            The URL to the author.
+ * @property string|null $icon_url       The source of the author icon. Must be https.
+ * @property string|null $proxy_icon_url A proxied version of the icon url.
  */
 class Author extends Part
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
-    protected $fillable = [
-        'name',
-        'url',
-        'icon_url',
-        'proxy_icon_url',
-    ];
+    protected $fillable = ['name', 'url', 'icon_url', 'proxy_icon_url'];
 }

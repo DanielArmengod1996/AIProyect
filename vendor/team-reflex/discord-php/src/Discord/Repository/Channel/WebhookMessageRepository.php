@@ -16,24 +16,21 @@ use Discord\Parts\Channel\Message;
 use Discord\Repository\AbstractRepository;
 
 /**
- * Contains messages sent to a channel from the webhook.
+ * Contains messages sent to channels from webhook.
  *
- * @see Message
+ * @see \Discord\Parts\Channel\Message
  * @see \Discord\Parts\Channel\Channel
  * @see \Discord\Parts\Channel\Webhook
  *
- * @since 7.2.0
- *
- * @method Message|null get(string $discrim, $key)
- * @method Message|null pull(string|int $key, $default = null)
- * @method Message|null first()
- * @method Message|null last()
- * @method Message|null find()
+ * @method Message|null get(string $discrim, $key)  Gets an item from the collection.
+ * @method Message|null first()                     Returns the first element of the collection.
+ * @method Message|null pull($key, $default = null) Pulls an item from the repository, removing and returning the item.
+ * @method Message|null find(callable $callback)    Runs a filter callback over the repository.
  */
 class WebhookMessageRepository extends AbstractRepository
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     protected $endpoints = [
         'get' => Endpoint::WEBHOOK_MESSAGE,
@@ -42,7 +39,7 @@ class WebhookMessageRepository extends AbstractRepository
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     protected $class = Message::class;
 }

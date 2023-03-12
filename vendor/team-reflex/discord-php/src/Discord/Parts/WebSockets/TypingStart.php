@@ -19,51 +19,46 @@ use Discord\Parts\Part;
 use Discord\Parts\User\User;
 
 /**
- * A TypingStart part is used when the `TYPING_START` event is fired on the
- * WebSocket. It contains information such as when the event was fired and then
- * channel it was fired in.
+ * A TypingStart part is used when the `TYPING_START` event is fired on the WebSocket. It contains
+ * information such as when the event was fired and then channel it was fired in.
  *
- * @since 2.1.3
+ * @see https://discord.com/developers/docs/topics/gateway#typing-start
  *
- * @link https://discord.com/developers/docs/topics/gateway-events#typing-start
- *
- * @property      string              $channel_id The unique identifier of the channel that the user started typing in.
- * @property-read Channel|Thread|null $channel    The channel that the user started typing in.
- * @property      string|null         $guild_id   The unique identifier of the guild that the user started typing in.
- * @property-read Guild|null          $guild      The guild that the user started typing in.
- * @property      string              $user_id    The unique identifier of the user that started typing
- * @property-read User|null           $user       The user that started typing.
- * @property      Carbon              $timestamp  A timestamp of when the user started typing.
- * @property      Member|null         $member     The member that started typing.
+ * @property string              $channel_id The unique identifier of the channel that the user started typing in.
+ * @property Channel|Thread|null $channel    The channel that the user started typing in.
+ * @property string|null         $guild_id   The unique identifier of the guild that the user started typing in.
+ * @property Guild|null          $guild      The guild that the user started typing in.
+ * @property string              $user_id    The unique identifier of the user that started typing
+ * @property User|null           $user       The user that started typing.
+ * @property Carbon              $timestamp  A timestamp of when the user started typing.
+ * @property Member|null         $member     The member that started typing.
  */
 class TypingStart extends Part
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
-    protected $fillable = [
-        'channel_id',
-        'guild_id',
-        'user_id',
-        'timestamp',
-        'member',
-    ];
+    protected $fillable = ['channel_id', 'guild_id', 'user_id', 'timestamp', 'member'];
+
+    /**
+     * @inheritdoc
+     */
+    protected $visible = ['channel', 'guild', 'user'];
 
     /**
      * Gets the channel attribute.
      *
      * @return Channel|Thread|null The channel that the user started typing in.
      */
-    protected function getChannelAttribute(): ?Part
+    protected function getChannelAttribute()
     {
-        if ($guild = $this->guild) {
-            $channels = $guild->channels;
-            if ($channel = $channels->get('id', $this->channel_id)) {
+        if ($this->guild) {
+            if ($channel = $this->guild->channels->offsetGet($this->channel_id)) {
                 return $channel;
             }
 
-            foreach ($channels as $parent) {
-                if ($thread = $parent->threads->get('id', $this->channel_id)) {
+            foreach ($this->guild->channels as $channel) {
+                if ($thread = $channel->threads->offsetGet($this->channel_id)) {
                     return $thread;
                 }
             }
@@ -71,11 +66,11 @@ class TypingStart extends Part
             return null;
         }
 
-        if ($channel = $this->discord->private_channels->get('id', $this->channel_id)) {
+        if ($channel = $this->discord->private_channels->offsetGet($this->channel_id)) {
             return $channel;
         }
 
-        return $this->factory->part(Channel::class, [
+        return $this->factory->create(Channel::class, [
             'id' => $this->channel_id,
             'type' => Channel::TYPE_DM,
         ], true);
@@ -88,7 +83,7 @@ class TypingStart extends Part
      */
     protected function getGuildAttribute(): ?Guild
     {
-        if (! isset($this->guild_id)) {
+        if (! $this->guild_id) {
             return null;
         }
 
@@ -102,15 +97,15 @@ class TypingStart extends Part
      */
     protected function getUserAttribute(): ?User
     {
-        return $this->discord->users->get('id', $this->user_id);
+        return $this->discord->users->offsetGet($this->user_id);
     }
 
     /**
      * Gets the timestamp attribute.
      *
-     * @return Carbon The time that the user started typing.
-     *
      * @throws \Exception
+     *
+     * @return Carbon The time that the user started typing.
      */
     protected function getTimestampAttribute(): Carbon
     {
@@ -124,10 +119,8 @@ class TypingStart extends Part
      */
     protected function getMemberAttribute(): ?Member
     {
-        if ($guild = $this->guild) {
-            if ($member = $guild->members->get('id', $this->user_id)) {
-                return $member;
-            }
+        if ($this->guild && $member = $this->guild->members->offsetGet($this->user_id)) {
+            return $member;
         }
 
         if (isset($this->attributes['member'])) {

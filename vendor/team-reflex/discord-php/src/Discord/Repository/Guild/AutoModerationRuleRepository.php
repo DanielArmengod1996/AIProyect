@@ -16,23 +16,20 @@ use Discord\Parts\Guild\AutoModeration\Rule;
 use Discord\Repository\AbstractRepository;
 
 /**
- * Contains auto moderation rules for a guild.
+ * Contains auto moderation rules that belong to guilds.
  *
- * @see Rule
+ * @see \Discord\Parts\Guild\AutoModeration\Rule
  * @see \Discord\Parts\Guild\Guild
  *
- * @since 7.1.0
- *
- * @method Rule|null get(string $discrim, $key)
- * @method Rule|null pull(string|int $key, $default = null)
- * @method Rule|null first()
- * @method Rule|null last()
- * @method Rule|null find()
+ * @method Rule|null get(string $discrim, $key)  Gets an item from the collection.
+ * @method Rule|null first()                     Returns the first element of the collection.
+ * @method Rule|null pull($key, $default = null) Pulls an item from the repository, removing and returning the item.
+ * @method Rule|null find(callable $callback)    Runs a filter callback over the repository.
  */
 class AutoModerationRuleRepository extends AbstractRepository
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     protected $endpoints = [
         'all' => Endpoint::GUILD_AUTO_MODERATION_RULES,
@@ -43,7 +40,7 @@ class AutoModerationRuleRepository extends AbstractRepository
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     protected $class = Rule::class;
 }

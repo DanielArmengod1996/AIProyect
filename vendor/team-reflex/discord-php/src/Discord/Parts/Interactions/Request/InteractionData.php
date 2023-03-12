@@ -11,33 +11,31 @@
 
 namespace Discord\Parts\Interactions\Request;
 
-use Discord\Helpers\Collection;
-use Discord\Parts\Interactions\Command\Command;
 use Discord\Parts\Part;
+use Discord\Repository\Interaction\ComponentRepository;
+use Discord\Repository\Interaction\OptionRepository;
 
 /**
  * Represents the data associated with an interaction.
  *
- * @link https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object-interaction-data
+ * @see https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object-interaction-data-structure
  *
- * @since 7.0.0
- *
- * @property string                      $id             ID of the invoked command.
- * @property string                      $name           Name of the invoked command.
- * @property int                         $type           The type of the invoked command.
- * @property Resolved|null               $resolved       Resolved users, members, roles and channels that are relevant.
- * @property Collection|Option[]|null    $options        Parameters and values from the user.
- * @property string|null                 $guild_id       ID of the guild internally passed from Interaction or ID of the guild the command belongs to.
- * @property string|null                 $target_id      Id the of user or message targetted by a user or message command.
- * @property string|null                 $custom_id      Custom ID the component was created for. (Only for Message Component & Modal)
- * @property int|null                    $component_type Type of the component. (Only for Message Component)
- * @property string[]|null               $values         Values selected in a select menu. (Only for Message Component)
- * @property Collection|Component[]|null $components     The values submitted by the user. (Only for Modal)
+ * @property string              $id             ID of the invoked command.
+ * @property string              $name           Name of the invoked command.
+ * @property int                 $type           The type of the invoked command.
+ * @property Resolved|null       $resolved       Resolved users, members, roles and channels that are relevant.
+ * @property OptionRepository    $options        Parameters and values from the user.
+ * @property string|null         $custom_id      Custom ID the component was created for. Not used for slash commands.
+ * @property int|null            $component_type Type of the component. Not used for slash commands.
+ * @property string[]|null       $values         Values selected in a select menu.
+ * @property string|null         $target_id      Id the of user or message targetted by a user or message command.
+ * @property ComponentRepository $components     The values submitted by the user in modal.
+ * @property string|null         $guild_id       ID of the guild internally passed from Interaction or ID of the guild the command belongs to.
  */
 class InteractionData extends Part
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     protected $fillable = [
         'id',
@@ -45,54 +43,49 @@ class InteractionData extends Part
         'type',
         'resolved',
         'options',
-        'guild_id',
-        'target_id',
-
-        // message components
         'custom_id',
         'component_type',
         'values',
-        'components', // modal only
+        'target_id',
+        'components',
+        'guild_id',
     ];
 
     /**
-     * Gets the options of the interaction.
-     *
-     * @return Collection|Option[]|null $options
+     * @inheritdoc
      */
-    protected function getOptionsAttribute(): ?Collection
+    protected $hidden = ['guild_id'];
+
+    /**
+     * @inheritdoc
+     */
+    protected $repositories = [
+        'options' => OptionRepository::class,
+        'components' => ComponentRepository::class,
+    ];
+
+    /**
+     * Sets the options of the interaction.
+     *
+     * @param array $options
+     */
+    protected function setOptionsAttribute($options)
     {
-        if (! isset($this->attributes['options']) && $this->type != Command::CHAT_INPUT) {
-            return null;
+        foreach ($options as $option) {
+            $this->options->pushItem($this->factory->create(Option::class, $option, true));
         }
-
-        $options = Collection::for(Option::class, 'name');
-
-        foreach ($this->attributes['options'] ?? [] as $option) {
-            $options->pushItem($this->factory->part(Option::class, (array) $option, true));
-        }
-
-        return $options;
     }
 
     /**
-     * Gets the components of the interaction.
+     * Sets the components of the interaction.
      *
-     * @return Collection|Component[]|null $components
+     * @param array $components
      */
-    protected function getComponentsAttribute(): ?Collection
+    protected function setComponentsAttribute($components)
     {
-        if (! isset($this->attributes['components'])) {
-            return null;
+        foreach ($components as $component) {
+            $this->components->pushItem($this->factory->create(Component::class, $component, true));
         }
-
-        $components = Collection::for(Component::class, null);
-
-        foreach ($this->attributes['components'] as $component) {
-            $components->pushItem($this->factory->part(Component::class, (array) $component, true));
-        }
-
-        return $components;
     }
 
     /**
@@ -111,6 +104,6 @@ class InteractionData extends Part
             $adata->guild_id = $this->guild_id;
         }
 
-        return $this->factory->part(Resolved::class, (array) $adata, true);
+        return $this->factory->create(Resolved::class, $adata, true);
     }
 }

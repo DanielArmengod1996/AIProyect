@@ -11,17 +11,20 @@
 
 namespace Discord\Voice;
 
+use function Sodium\crypto_secretbox;
+
 /**
  * A voice packet received from Discord.
- *
- * Huge thanks to Austin and Michael from JDA for the constants and audio
- * packets. Check out their repo:
- * https://github.com/DV8FromTheWorld/JDA
- *
- * @since 3.2.0
  */
 class VoicePacket
 {
+    /**
+     * Huge thanks to Austin and Michael from JDA for these constants
+     * and audio packets.
+     *
+     * Check out their repo:
+     * https://github.com/DV8FromTheWorld/JDA
+     */
     public const RTP_HEADER_BYTE_LENGTH = 12;
 
     public const RTP_VERSION_PAD_EXTEND_INDEX = 0;
@@ -115,7 +118,7 @@ class VoicePacket
         $nonce = new Buffer(24);
         $nonce->write((string) $header, 0);
 
-        $data = \sodium_crypto_secretbox($data, (string) $nonce, $key);
+        $data = crypto_secretbox($data, (string) $nonce, $key);
 
         $this->buffer = new Buffer(strlen((string) $header) + strlen($data));
         $this->buffer->write((string) $header, 0);
@@ -125,7 +128,7 @@ class VoicePacket
     /**
      * Builds the header.
      *
-     * @return Buffer The header.
+     * @return Buffer The header,
      */
     protected function buildHeader(): Buffer
     {
@@ -194,7 +197,7 @@ class VoicePacket
      *
      * @param string $data Data from Discord.
      *
-     * @return VoicePacket A voice packet.
+     * @return self A voice packet.
      */
     public static function make(string $data): VoicePacket
     {
@@ -210,9 +213,9 @@ class VoicePacket
      *
      * @param Buffer $buffer The buffer to set.
      *
-     * @return $this
+     * @return self
      */
-    public function setBuffer(Buffer $buffer): self
+    public function setBuffer(Buffer $buffer): VoicePacket
     {
         $this->buffer = $buffer;
 
@@ -228,7 +231,7 @@ class VoicePacket
      *
      * @return string
      */
-    public function __toString(): string
+    public function __toString()
     {
         return (string) $this->buffer;
     }

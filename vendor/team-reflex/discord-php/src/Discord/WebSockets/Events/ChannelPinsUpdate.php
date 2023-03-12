@@ -12,20 +12,19 @@
 namespace Discord\WebSockets\Events;
 
 use Discord\WebSockets\Event;
+use Discord\Helpers\Deferred;
 
 /**
- * @link https://discord.com/developers/docs/topics/gateway-events#channel-pins-update
- *
- * @since 4.0.4
+ * @see https://discord.com/developers/docs/topics/gateway#channel-pins-update
  */
 class ChannelPinsUpdate extends Event
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
-    public function handle($data)
+    public function handle(Deferred &$deferred, $data): void
     {
         // TODO
-        return $data;
+        $deferred->resolve($data);
     }
 }

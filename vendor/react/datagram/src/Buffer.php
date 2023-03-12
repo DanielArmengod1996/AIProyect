@@ -79,6 +79,10 @@ class Buffer extends EventEmitter
 
     public function end()
     {
+        if ($this->writable === false) {
+            return;
+        }
+
         $this->writable = false;
 
         if (!$this->outgoing) {
@@ -98,25 +102,17 @@ class Buffer extends EventEmitter
 
     protected function handleWrite($data, $remoteAddress)
     {
-        $errstr = '';
-        \set_error_handler(function ($_, $error) use (&$errstr) {
-            // Match errstr from PHP's warning message.
-            // stream_socket_sendto(): Message too long\n
-            $errstr = \trim($error);
-        });
-
         if ($remoteAddress === null) {
             // do not use fwrite() as it obeys the stream buffer size and
             // packets are not to be split at 8kb
-            $ret = \stream_socket_sendto($this->socket, $data);
+            $ret = @\stream_socket_sendto($this->socket, $data);
         } else {
-            $ret = \stream_socket_sendto($this->socket, $data, 0, $remoteAddress);
+            $ret = @\stream_socket_sendto($this->socket, $data, 0, $remoteAddress);
         }
 
-        \restore_error_handler();
-
         if ($ret < 0 || $ret === false) {
-            throw new Exception('Unable to send packet: ' . $errstr);
+            $error = \error_get_last();
+            throw new Exception('Unable to send packet: ' . \trim($error['message']));
         }
     }
 }

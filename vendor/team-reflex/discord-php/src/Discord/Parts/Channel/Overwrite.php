@@ -15,18 +15,13 @@ use Discord\Parts\Part;
 use Discord\Parts\Permissions\ChannelPermission;
 
 /**
- * Channel Overwrite Class.
+ * Overwrite Class.
  *
- * @link https://discord.com/developers/docs/resources/channel#overwrite-object
- *
- * @since 3.1.1
- *
- * @property string            $id    The unique identifier of the user/role that the overwrite applies to.
- * @property int               $type  The type of part that the overwrite applies to.
- * @property ChannelPermission $allow The allow permissions.
- * @property ChannelPermission $deny  The deny permissions.
- *
- * @property string $channel_id The unique identifier of the channel that the overwrite belongs to.
+ * @property string            $id         The unique identifier of the user/role that the overwrite applies to.
+ * @property string            $channel_id The unique identifier of the channel that the overwrite belongs to.
+ * @property int               $type       The type of part that the overwrite applies to.
+ * @property ChannelPermission $allow      The allow permissions.
+ * @property ChannelPermission $deny       The deny permissions.
  */
 class Overwrite extends Part
 {
@@ -34,27 +29,20 @@ class Overwrite extends Part
     public const TYPE_MEMBER = 1;
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
-    protected $fillable = [
-        'id',
-        'type',
-        'allow',
-        'deny',
-
-        // @internal
-        'channel_id',
-    ];
+    protected $fillable = ['id', 'channel_id', 'type', 'allow', 'deny', 'permissions'];
 
     /**
      * Sets the allow attribute of the role.
      *
-     * @param ChannelPermission|int $allow
+     * @param  ChannelPermission|int $allow
+     * @throws \Exception
      */
     protected function setAllowAttribute($allow): void
     {
         if (! ($allow instanceof ChannelPermission)) {
-            $allow = $this->factory->part(ChannelPermission::class, ['bitwise' => $allow], true);
+            $allow = $this->factory->create(ChannelPermission::class, ['bitwise' => $allow], true);
         }
 
         $this->attributes['allow'] = $allow;
@@ -63,21 +51,20 @@ class Overwrite extends Part
     /**
      * Sets the deny attribute of the role.
      *
-     * @param ChannelPermission|int $deny
+     * @param  ChannelPermission|int $deny
+     * @throws \Exception
      */
     protected function setDenyAttribute($deny): void
     {
         if (! ($deny instanceof ChannelPermission)) {
-            $deny = $this->factory->part(ChannelPermission::class, ['bitwise' => $deny], true);
+            $deny = $this->factory->create(ChannelPermission::class, ['bitwise' => $deny], true);
         }
 
         $this->attributes['deny'] = $deny;
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @see Channel::getUpdatableAttributes()
+     * @inheritDoc
      */
     public function getUpdatableAttributes(): array
     {
@@ -90,24 +77,12 @@ class Overwrite extends Part
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function getRepositoryAttributes(): array
     {
         return [
             'overwrite_id' => $this->id,
         ];
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getRawAttributes(): array
-    {
-        $attributes = $this->attributes;
-        $attributes['allow'] = $this->attributes['allow']->bitwise;
-        $attributes['deny'] = $this->attributes['deny']->bitwise;
-
-        return $attributes;
     }
 }

@@ -17,8 +17,6 @@ use React\Stream\WritableStreamInterface;
 
 /**
  * Handles recieving audio from Discord.
- *
- * @since 3.2.0
  */
 class RecieveStream extends EventEmitter implements DuplexStreamInterface
 {
@@ -117,7 +115,7 @@ class RecieveStream extends EventEmitter implements DuplexStreamInterface
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function isReadable()
     {
@@ -125,7 +123,7 @@ class RecieveStream extends EventEmitter implements DuplexStreamInterface
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function isWritable()
     {
@@ -133,7 +131,7 @@ class RecieveStream extends EventEmitter implements DuplexStreamInterface
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function write($data)
     {
@@ -141,7 +139,7 @@ class RecieveStream extends EventEmitter implements DuplexStreamInterface
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function end($data = null)
     {
@@ -154,7 +152,7 @@ class RecieveStream extends EventEmitter implements DuplexStreamInterface
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function close()
     {
@@ -169,7 +167,7 @@ class RecieveStream extends EventEmitter implements DuplexStreamInterface
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function pause()
     {
@@ -185,7 +183,7 @@ class RecieveStream extends EventEmitter implements DuplexStreamInterface
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function resume()
     {
@@ -209,7 +207,7 @@ class RecieveStream extends EventEmitter implements DuplexStreamInterface
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function pipe(WritableStreamInterface $dest, array $options = [])
     {

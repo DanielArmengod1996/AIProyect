@@ -16,8 +16,6 @@ use TrafficCophp\ByteBuffer\Buffer as BaseBuffer;
 
 /**
  * A Byte Buffer similar to Buffer in NodeJS.
- *
- * @since 3.2.0
  */
 class Buffer extends BaseBuffer implements ArrayAccess
 {

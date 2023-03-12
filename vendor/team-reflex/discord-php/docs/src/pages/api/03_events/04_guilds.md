@@ -8,22 +8,13 @@ Requires the `Intents::GUILDS` intent.
 
 Called with a `Guild` object in one of the following situations:
 
-1. When the Bot is first starting and the guilds are becoming available. (unless the listener is put inside after 'ready' event)
+1. When the Bot is first starting and the guilds are becoming available.
 2. When a guild was unavailable and is now available due to an outage.
 3. When the Bot joins a new guild.
 
 ```php
-$discord->on(Event::GUILD_CREATE, function (object $guild, Discord $discord) {
-    if (! ($guild instanceof Guild)) {
-        // the guild is unavailable due to an outage, $guild is a stdClass
-        // {
-        //     "id": "",
-        //     "unavailable": true,
-        // }
-        return;
-    }
-
-    // the Bot has joined the guild
+$discord->on(Event::GUILD_CREATE, function (Guild $guild, Discord $discord) {
+    // ...
 });
 ```
 
@@ -48,10 +39,10 @@ Called with a `Guild` object in one of the following situations:
 $discord->on(Event::GUILD_DELETE, function (object $guild, Discord $discord, bool $unavailable) {
     // ...
     if ($unavailable) {
-        // the guild is unavailabe due to an outage, $guild is a stdClass
+        // the guild is unavailabe due to an outage
         // {
-        //     "guild_id": "",
-        //     "unavailable": "",
+        //     "id": "" // guild ID
+        //     "unavailable": true
         // }
     } else {
         // the Bot has been kicked from the guild
@@ -59,23 +50,13 @@ $discord->on(Event::GUILD_DELETE, function (object $guild, Discord $discord, boo
 });
 ```
 
-## Guild Moderation
+## Guild Bans
 
-Requires the `Intents::GUILD_MODERATION` intent and `ban_members` or `view_audit_log` permission.
-
-### Guild Audit Log Entry Create
-
-Called with an `Audit Log Entry` object when an audit log entry is created. Requires the `view_audit_log` permission.
-
-```php
-$discord->on(Event::GUILD_AUDIT_LOG_ENTRY_CREATE, function (Entry $entry, Discord $discord) {
-    // ...
-});
-```
+Requires the `Intents::GUILD_BANS` intent and `ban_members` permission.
 
 ### Guild Ban Add
 
-Called with a `Ban` object when a member is banned from a guild. Requires the `ban_members` permission.
+Called with a `Ban` object when a member is banned from a guild.
 
 ```php
 $discord->on(Event::GUILD_BAN_ADD, function (Ban $ban, Discord $discord) {
@@ -85,7 +66,7 @@ $discord->on(Event::GUILD_BAN_ADD, function (Ban $ban, Discord $discord) {
 
 ### Guild Ban Remove
 
-Called with a `Ban` object when a user is unbanned from a guild. Requires the `ban_members` permission.
+Called with a `Ban` object when a user is unbanned from a guild.
 
 ```php
 $discord->on(Event::GUILD_BAN_REMOVE, function (Ban $ban, Discord $discord) {
@@ -183,9 +164,9 @@ Called with a `Role` object when a role is deleted in a guild. `$role` may retur
 ```php
 $discord->on(Event::GUILD_ROLE_DELETE, function (object $role, Discord $discord) {
     if ($role instanceof Role) {
-        // $role was cached
+        // Role is present in cache
     }
-    // $role was not in cache:
+    // If the role is not present in the cache:
     else {
         // {
         //     "guild_id": "" // role guild ID
@@ -258,16 +239,8 @@ Requires the `Intents::GUILD_INTEGRATIONS` intent.
 Called with a cached `Guild` object when a guild integration is updated.
 
 ```php
-$discord->on(Event::GUILD_INTEGRATIONS_UPDATE, function (object $guild, Discord $discord) {
-    if ($guild instanceof Guild) {
-        // $guild was cached
-    }
-    // $guild was not in cache:
-    else {
-        // {
-        //     "guild_id": "",
-        // }
-    }
+$discord->on(Event::GUILD_INTEGRATIONS_UPDATE, function (?Guild $guild, Discord $discord) {
+    // ...
 });
 ```
 
@@ -294,19 +267,10 @@ $discord->on(Event::INTEGRATION_UPDATE, function (Integration $integration, Disc
 ### Integration Delete
 
 Called with an old `Integration` object when a integration is deleted from a guild.
+`$integration` _may_ be `null` if Integration is not cached.
 
 ```php
-$discord->on(Event::INTEGRATION_DELETE, function (object $integration, Discord $discord) {
-    if ($integration instanceof Integration) {
-        // $integration was cached
-    }
-    // $integration was not in cache:
-    else {
-        // {
-        //     "id": "",
-        //     "guild_id": "",
-        //     "application_id": ""
-        // }
-    }
+$discord->on(Event::INTEGRATION_DELETE, function (?Integration $integration, Discord $discord) {
+    // ...
 });
 ```

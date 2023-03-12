@@ -36,19 +36,11 @@ class Socket extends EventEmitter implements SocketInterface
 
     public function getLocalAddress()
     {
-        if ($this->socket === false) {
-            return null;
-        }
-
         return $this->sanitizeAddress(@\stream_socket_get_name($this->socket, false));
     }
 
     public function getRemoteAddress()
     {
-        if ($this->socket === false) {
-            return null;
-        }
-
         return $this->sanitizeAddress(@\stream_socket_get_name($this->socket, true));
     }
 
@@ -110,10 +102,11 @@ class Socket extends EventEmitter implements SocketInterface
             return null;
         }
 
-        // check if this is an IPv6 address which includes multiple colons but no square brackets (PHP < 7.3)
+        // this is an IPv6 address which includes colons but no square brackets
         $pos = \strrpos($address, ':');
         if ($pos !== false && \strpos($address, ':') < $pos && \substr($address, 0, 1) !== '[') {
-            $address = '[' . \substr($address, 0, $pos) . ']:' . \substr($address, $pos + 1); // @codeCoverageIgnore
+            $port = \substr($address, $pos + 1);
+            $address = '[' . \substr($address, 0, $pos) . ']:' . $port;
         }
         return $address;
     }

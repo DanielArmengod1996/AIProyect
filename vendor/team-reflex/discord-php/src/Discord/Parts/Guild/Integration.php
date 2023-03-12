@@ -19,35 +19,31 @@ use Discord\Parts\User\User;
 /**
  * An Integration is a guild integrations for Twitch, Youtube, Bot and Apps.
  *
- * @link https://discord.com/developers/docs/resources/guild#integration-object
+ * @see https://discord.com/developers/docs/resources/guild#integration-object
  *
- * @since 7.0.0
- *
- * @property      string           $id                  Integration id.
- * @property      string           $name                Integration name.
- * @property      string           $type                Integration type (twitch, youtube, discord, or guild_subscription).
- * @property      bool|null        $enabled             Is this integration enabled?
- * @property      bool|null        $syncing             Is this integration syncing?
- * @property      string|null      $role_id             Id that this integration uses for "subscribers".
- * @property-read Role|null        $role                Role that this integration uses for "subscribers".
- * @property      bool|null        $enable_emoticons    Whether emoticons should be synced for this integration (twitch only currently).
- * @property      int|null         $expire_behavior     The behavior of expiring subscribers.
- * @property      int|null         $expire_grace_period The grace period (in days) before expiring subscribers.
- * @property      User|null        $user                User for this integration.
- * @property      object           $account             Integration account information.
- * @property      Carbon|null      $synced_at           When this integration was last synced.
- * @property      int|null         $subscriber_count    How many subscribers this integration has.
- * @property      bool|null        $revoked             Has this integration been revoked.
- * @property      Application|null $application         The bot/OAuth2 application for discord integrations.
- * @property      array|null       $scopes              The scopes the application has been authorized for.
- *
- * @property      string|null $guild_id
- * @property-read Guild|null  $guild
+ * @property string           $id                  Integration id.
+ * @property string           $name                Integration name.
+ * @property string           $type                Integration type (twitch, youtube, or discord).
+ * @property bool|null        $enabled             Is this integration enabled?
+ * @property bool|null        $syncing             Is this integration syncing?
+ * @property string|null      $role_id             Id that this integration uses for "subscribers".
+ * @property Role|null        $role                Role that this integration uses for "subscribers".
+ * @property bool|null        $enable_emoticons    Whether emoticons should be synced for this integration (twitch only currently).
+ * @property int|null         $expire_behavior     The behavior of expiring subscribers.
+ * @property int|null         $expire_grace_period The grace period (in days) before expiring subscribers.
+ * @property User|null        $user                User for this integration.
+ * @property object           $account             Integration account information.
+ * @property Carbon|null      $synced_at           When this integration was last synced.
+ * @property int|null         $subscriber_count    How many subscribers this integration has.
+ * @property bool|null        $revoked             Has this integration been revoked.
+ * @property Application|null $application         The bot/OAuth2 application for discord integrations.
+ * @property array|null       $scopes              The scopes the application has been authorized for.
+ * @property Guild|null       $guild
  */
 class Integration extends Part
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     protected $fillable = [
         'id',
@@ -66,8 +62,6 @@ class Integration extends Part
         'revoked',
         'application',
         'scopes',
-
-        // events
         'guild_id',
     ];
 
@@ -92,9 +86,9 @@ class Integration extends Part
     /**
      * Returns the synced_at attribute.
      *
-     * @return Carbon|null The synced_at attribute.
-     *
      * @throws \Exception
+     *
+     * @return Carbon|null The synced_at attribute.
      */
     protected function getSyncedAtAttribute(): ?Carbon
     {
@@ -118,13 +112,13 @@ class Integration extends Part
             return null;
         }
 
-        $botApplication = $this->discord->application;
-
-        if ($this->attributes['application']->id == $botApplication->id) {
-            return $botApplication;
+        if ($this->attributes['application']->id == $this->discord->application->id) {
+            return $this->discord->application;
         }
 
-        return $this->factory->part(Application::class, (array) $this->attributes['application'], true);
+        $application = $this->factory->part(Application::class, (array) $this->attributes['application'], true);
+
+        return $application;
     }
 
     /**
@@ -144,15 +138,15 @@ class Integration extends Part
      */
     protected function getRoleAttribute(): ?Role
     {
-        if ($guild = $this->guild) {
-            return $guild->roles->get('id', $this->attributes['role_id']);
+        if ($this->guild) {
+            return $this->guild->roles->get('id', $this->attributes['role_id']);
         }
 
         return null;
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function getRepositoryAttributes(): array
     {

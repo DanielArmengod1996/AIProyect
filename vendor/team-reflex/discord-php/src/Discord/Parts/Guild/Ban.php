@@ -17,31 +17,26 @@ use Discord\Parts\User\User;
 /**
  * A Ban is a ban on a user specific to a guild. It is also IP based.
  *
- * @link https://discord.com/developers/docs/resources/guild#ban-object
+ * @see https://discord.com/developers/docs/resources/guild#ban-object
  *
- * @since 2.0.0
- *
- * @property string $reason  The reason for the ban.
- * @property User   $user    The banned user.
- * @property string $user_id
- *
- * @property      string|null $guild_id
- * @property-read Guild|null  $guild
+ * @property string      $reason   The reason for the ban.
+ * @property User        $user     The banned user.
+ * @property string      $user_id
+ * @property string|null $guild_id
+ * @property Guild|null  $guild
  */
 class Ban extends Part
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     protected $fillable = [
         'reason',
         'user',
 
-        // events
-        'guild_id',
-
-        // @internal
+        // internally used
         'user_id',
+        'guild_id',
     ];
 
     /**
@@ -79,7 +74,11 @@ class Ban extends Part
      */
     protected function getUserAttribute(): User
     {
-        if ($user = $this->discord->users->get('id', $this->user_id)) {
+        if (isset($this->attributes['user_id']) && $user = $this->discord->users->get('id', $this->attributes['user_id'])) {
+            return $user;
+        }
+
+        if ($user = $this->discord->users->get('id', $this->attributes['user']->id)) {
             return $user;
         }
 
@@ -87,7 +86,7 @@ class Ban extends Part
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function getRepositoryAttributes(): array
     {

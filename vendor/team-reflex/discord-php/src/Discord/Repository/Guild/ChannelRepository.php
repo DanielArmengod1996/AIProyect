@@ -16,23 +16,20 @@ use Discord\Parts\Channel\Channel;
 use Discord\Repository\AbstractRepository;
 
 /**
- * Contains channels on a guild.
+ * Contains channels that belong to guilds.
  *
- * @see Channel
+ * @see \Discord\Parts\Channel\Channel
  * @see \Discord\Parts\Guild\Guild
  *
- * @since 4.0.0
- *
- * @method Channel|null get(string $discrim, $key)
- * @method Channel|null pull(string|int $key, $default = null)
- * @method Channel|null first()
- * @method Channel|null last()
- * @method Channel|null find()
+ * @method Channel|null get(string $discrim, $key)  Gets an item from the collection.
+ * @method Channel|null first()                     Returns the first element of the collection.
+ * @method Channel|null pull($key, $default = null) Pulls an item from the repository, removing and returning the item.
+ * @method Channel|null find(callable $callback)    Runs a filter callback over the repository.
  */
 class ChannelRepository extends AbstractRepository
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     protected $endpoints = [
         'all' => Endpoint::GUILD_CHANNELS,
@@ -43,7 +40,7 @@ class ChannelRepository extends AbstractRepository
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     protected $class = Channel::class;
 }

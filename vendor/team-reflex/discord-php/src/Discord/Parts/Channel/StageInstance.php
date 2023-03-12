@@ -15,28 +15,28 @@ use Discord\Parts\Guild\Guild;
 use Discord\Parts\Part;
 
 /**
- * A Stage Instance holds information about a live stage.
+ * A Stage Instance holds information about a live stage. on a Discord guild.
  *
- * @link https://discord.com/developers/docs/resources/stage-instance#stage-instance-resource
+ * @see https://discord.com/developers/docs/resources/stage-instance#stage-instance-resource
  *
- * @since 7.0.0
- *
- * @property      string       $id                       The unique identifier of the Stage Instance.
- * @property      string       $guild_id                 The unique identifier of the guild that the stage instance associated to.
- * @property-read Guild|null   $guild                    The guild that the stage instance associated to.
- * @property      string       $channel_id               The id of the associated Stage channel.
- * @property-read Channel|null $channel                  The channel that the stage instance associated to.
- * @property      string       $topic                    The topic of the Stage instance (1-120 characters).
- * @property      int          $privacy_level            The privacy level of the Stage instance.
- * @property      bool         $send_start_notification  Notify @everyone that a Stage instance has started.
- * @property      ?string      $guild_scheduled_event_id The id of the scheduled event.
+ * @property string       $id                       The unique identifier of the Stage Instance.
+ * @property string       $guild_id                 The unique identifier of the guild that the stage instance associated to.
+ * @property Guild|null   $guild                    The guild that the stage instance associated to.
+ * @property string       $channel_id               The id of the associated Stage channel.
+ * @property Channel      $channel                  The channel that the stage instance associated to.
+ * @property string       $topic                    The topic of the Stage instance (1-120 characters).
+ * @property int          $privacy_level            The privacy level of the Stage instance.
+ * @property bool         $send_start_notification  Notify @everyone that a Stage instance has started.
+ * @property ?string|null $guild_scheduled_event_id The id of the scheduled event.
  */
 class StageInstance extends Part
 {
+    /** @deprecated 7.0.0 */
+    public const PRIVACY_LEVEL_PUBLIC = 1;
     public const PRIVACY_LEVEL_GROUP_ONLY = 2;
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     protected $fillable = [
         'id',
@@ -56,7 +56,7 @@ class StageInstance extends Part
      */
     protected function getGuildAttribute(): ?Guild
     {
-        return $this->discord->guilds->get('id', $this->guild_id);
+        return $this->discord->guilds->offsetGet($this->guild_id);
     }
 
     /**
@@ -66,10 +66,8 @@ class StageInstance extends Part
      */
     protected function getChannelAttribute(): ?Channel
     {
-        if ($guild = $this->guild) {
-            if ($channel = $guild->channels->get('id', $this->channel_id)) {
-                return $channel;
-            }
+        if ($this->guild && $channel = $this->guild->channels->offsetGet($this->channel_id)) {
+            return $channel;
         }
 
         if ($channel = $this->discord->getChannel($this->channel_id)) {
@@ -80,30 +78,20 @@ class StageInstance extends Part
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @link https://discord.com/developers/docs/resources/stage-instance#create-stage-instance-json-params
+     * @inheritdoc
      */
     public function getCreatableAttributes(): array
     {
-        $attr = [
+        return [
             'channel_id' => $this->channel_id,
             'topic' => $this->topic,
-            'privacy_level' => $this->privacy_level ?? null,
-            'send_start_notification' => $this->send_start_notification ?? null,
+            'privacy_level' => $this->privacy_level,
+            'send_start_notification' => $this->send_start_notification,
         ];
-
-        if (array_key_exists('guild_scheduled_event_id', $this->attributes)) {
-            $attr['guild_scheduled_event_id'] = $this->guild_scheduled_event_id;
-        }
-
-        return $attr;
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @link https://discord.com/developers/docs/resources/stage-instance#modify-stage-instance-json-params
+     * @inheritdoc
      */
     public function getUpdatableAttributes(): array
     {
@@ -114,7 +102,7 @@ class StageInstance extends Part
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function getRepositoryAttributes(): array
     {

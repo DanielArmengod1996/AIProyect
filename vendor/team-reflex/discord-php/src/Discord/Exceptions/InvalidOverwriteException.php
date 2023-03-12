@@ -11,9 +11,6 @@
 
 namespace Discord\Exceptions;
 
-/**
- * @since 5.0.0
- */
 class InvalidOverwriteException extends \Exception
 {
 }

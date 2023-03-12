@@ -38,9 +38,9 @@ Called with an old ``Message`` object *or* the raw payload when a message is del
 
    $discord->on(Event::MESSAGE_DELETE, function (object $message, Discord $discord) {
        if ($message instanceof Message) {
-           // $message was cached
+           // Message is present in cache
        }
-       // $message was not in cache:
+       // If the message is not present in the cache:
        else {
            // {
            //     "id": "", // deleted message ID,
@@ -60,9 +60,9 @@ Called with a ``Collection`` of old ``Message`` objects *or* the raw payload whe
    $discord->on(Event::MESSAGE_DELETE_BULK, function (Collection $messages, Discord $discord) {
        foreach ($messages as $message) {
            if ($message instanceof Message) {
-               // $message was cached
+               // Message is present in cache
            }
-           // $message was not in cache:
+           // If the message is not present in the cache:
            else {
                // {
                //     "id": "", // deleted message ID,

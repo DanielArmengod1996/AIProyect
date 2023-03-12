@@ -13,8 +13,6 @@ namespace Discord\Exceptions;
 
 /**
  * Thrown when DCA could not be found.
- *
- * @since 3.2.0
  */
 class DCANotFoundException extends \Exception
 {

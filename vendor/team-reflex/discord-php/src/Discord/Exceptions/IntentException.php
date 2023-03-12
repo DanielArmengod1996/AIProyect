@@ -13,8 +13,6 @@ namespace Discord\Exceptions;
 
 /**
  * Thrown when an invalid intent is given.
- *
- * @since 5.0.0
  */
 class IntentException extends \Exception
 {

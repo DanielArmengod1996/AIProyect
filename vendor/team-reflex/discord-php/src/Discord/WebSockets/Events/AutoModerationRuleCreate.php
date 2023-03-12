@@ -12,29 +12,26 @@
 namespace Discord\WebSockets\Events;
 
 use Discord\WebSockets\Event;
+use Discord\Helpers\Deferred;
 use Discord\Parts\Guild\AutoModeration\Rule;
-use Discord\Parts\Guild\Guild;
 
 /**
- * @link https://discord.com/developers/docs/topics/gateway-events#auto-moderation-rule-create
- *
- * @since 7.1.0
+ * @see https://discord.com/developers/docs/topics/gateway#auto-moderation-rule-create
  */
 class AutoModerationRuleCreate extends Event
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
-    public function handle($data)
+    public function handle(Deferred &$deferred, $data): void
     {
         /** @var Rule */
-        $rulePart = $this->factory->part(Rule::class, (array) $data, true);
+        $rulePart = $this->factory->create(Rule::class, $data, true);
 
-        /** @var ?Guild */
-        if ($guild = yield $this->discord->guilds->cacheGet($data->guild_id)) {
-            $guild->auto_moderation_rules->set($data->id, $rulePart);
+        if ($guild = $this->discord->guilds->get('id', $data->guild_id)) {
+            $guild->auto_moderation_rules->pushItem($rulePart);
         }
 
-        return $rulePart;
+        $deferred->resolve($rulePart);
     }
 }

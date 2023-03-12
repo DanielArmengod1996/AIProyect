@@ -166,7 +166,7 @@ Gets the effective permissions of the member:
 - When given a channel, returns the effective permissions of a member in a channel.
 - Otherwise, returns the effective permissions of a member in a guild.
 
-Returns a [role permission](#permissions).
+Returns a [role permission](#permissions) in a promise.
 
 #### Parameters
 
@@ -175,11 +175,15 @@ Returns a [role permission](#permissions).
 | channel | [Channel](#channel) or null | the channel to get the effective permissions for |
 
 ```php
-$permissions = $member->getPermissions($channel);
+$member->getPermissions($channel)->done(function (RolePermission $permission) {
+    // ...
+});
 
 // or
 
-$permissions = $member->getPermissions();
+$member->getPermissions()->done(function (RolePermission $permission) {
+    // ...
+});
 ```
 
 ### Get guild specific avatar URL

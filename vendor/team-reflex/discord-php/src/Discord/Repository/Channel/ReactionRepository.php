@@ -11,57 +11,29 @@
 
 namespace Discord\Repository\Channel;
 
-use Discord\Http\Endpoint;
 use Discord\Parts\Channel\Reaction;
 use Discord\Repository\AbstractRepository;
-use React\Promise\ExtendedPromiseInterface;
 
 /**
  * Contains reactions on a message.
  *
- * @see Reaction
  * @see \Discord\Parts\Channel\Message
+ * @see Reaction
  *
- * @since 5.1.0
- *
- * @method Reaction|null get(string $discrim, $key)
- * @method Reaction|null pull(string|int $key, $default = null)
- * @method Reaction|null first()
- * @method Reaction|null last()
- * @method Reaction|null find()
+ * @method Reaction|null get(string $discrim, $key)  Gets an item from the collection.
+ * @method Reaction|null first()                     Returns the first element of the collection.
+ * @method Reaction|null pull($key, $default = null) Pulls an item from the repository, removing and returning the item.
+ * @method Reaction|null find(callable $callback)    Runs a filter callback over the repository.
  */
 class ReactionRepository extends AbstractRepository
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
-    protected $endpoints = [
-        'delete' => Endpoint::MESSAGE_REACTION_EMOJI,
-    ];
+    protected $endpoints = [];
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     protected $class = Reaction::class;
-
-    /**
-     * Delete all reactions for emoji.
-     *
-     * {@inheritDoc}
-     *
-     * @param Reaction|string $part The Reaction part or unicode emoji to delete.
-     *
-     * @return ExtendedPromiseInterface<Reaction>
-     *
-     * @since 10.0.0
-     */
-    public function delete($part, ?string $reason = null): ExtendedPromiseInterface
-    {
-        // Deal with unicode emoji
-        if (is_string($part) && ! is_numeric($part)) {
-            $part = $this->create([$this->discrim => $part, 'emoji' => (object) ['id' => null, 'name' => $part]], true);
-        }
-
-        return parent::delete($part, $reason);
-    }
 }

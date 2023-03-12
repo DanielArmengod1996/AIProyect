@@ -20,34 +20,29 @@ use Discord\Parts\User\User;
 use React\Promise\ExtendedPromiseInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-use function React\Promise\reject;
-
 /**
  * A representation of a scheduled event in a guild.
  *
- * @link https://discord.com/developers/docs/resources/guild-scheduled-event
+ * @see https://discord.com/developers/docs/resources/guild-scheduled-event
  *
- * @since 7.0.0
- *
- * @property      string       $id                   The id of the scheduled event.
- * @property      string       $guild_id             The guild id which the scheduled event belongs to.
- * @property-read Guild|null   $guild                The guild which the scheduled event belongs to.
- * @property      ?string|null $channel_id           The channel id in which the scheduled event will be hosted, or null if scheduled entity type is EXTERNAL.
- * @property-read Channel|null $channel              The channel in which the scheduled event will be hosted, or null.
- * @property      ?string|null $creator_id           The id of the user that created the scheduled event.
- * @property      string       $name                 The name of the scheduled event (1-100 characters).
- * @property      ?string|null $description          The description of the scheduled event (1-1000 characters).
- * @property      Carbon       $scheduled_start_time The time the scheduled event will start.
- * @property      Carbon|null  $scheduled_end_time   The time the scheduled event will end, required if entity_type is EXTERNAL.
- * @property      int          $privacy_level        The privacy level of the scheduled event.
- * @property      int          $status               The status of the scheduled event.
- * @property      int          $entity_type          The type of the scheduled event.
- * @property      ?string      $entity_id            The id of an entity associated with a guild scheduled event.
- * @property      ?object      $entity_metadata      Additional metadata for the guild scheduled event.
- * @property      User|null    $creator              The user that created the scheduled event.
- * @property      int|null     $user_count           The number of users subscribed to the scheduled event.
- * @property      ?string|null $image                The cover image URL of the scheduled event.
- * @property-read string|null  $image_hash           The cover image hash of the scheduled event.
+ * @property string       $id                   The id of the scheduled event.
+ * @property string       $guild_id             The guild id which the scheduled event belongs to.
+ * @property Guild|null   $guild                The guild which the scheduled event belongs to.
+ * @property string|null  $channel_id           The channel id in which the scheduled event will be hosted, or null if scheduled entity type is EXTERNAL.
+ * @property Channel|null $channel              The channel in which the scheduled event will be hosted, or null.
+ * @property string|null  $creator_id           The id of the user that created the scheduled event.
+ * @property string|null  $image                The cover image URL of the scheduled event.
+ * @property string|null  $image_hash           The cover image hash of the scheduled event.
+ * @property string|null  $description          The description of the scheduled event (1-1000 characters).
+ * @property Carbon       $scheduled_start_time The time the scheduled event will start.
+ * @property Carbon|null  $scheduled_end_time   The time the scheduled event will end, required if entity_type is EXTERNAL.
+ * @property int          $privacy_level        The privacy level of the scheduled event.
+ * @property int          $status               The status of the scheduled event.
+ * @property int          $entity_type          The type of the scheduled event.
+ * @property string|null  $entity_id            The id of an entity associated with a guild scheduled event.
+ * @property object|null  $entity_metadata      Additional metadata for the guild scheduled event.
+ * @property User|null    $creator              The user that created the scheduled event.
+ * @property int|null     $user_count           The number of users subscribed to the scheduled event.
  */
 class ScheduledEvent extends Part
 {
@@ -63,7 +58,7 @@ class ScheduledEvent extends Part
     public const STATUS_CANCELED = 4;
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     protected $fillable = [
         'id',
@@ -85,13 +80,9 @@ class ScheduledEvent extends Part
     ];
 
     /**
-     * Get a list of guild scheduled event users subscribed to a guild scheduled
-     * event.
-     * Returns a list of guild scheduled event user objects on success.
-     * Guild member data, if it exists, is included if the with_member query
-     * parameter is set.
+     * Get a list of guild scheduled event users subscribed to a guild scheduled event. Returns a list of guild scheduled event user objects on success. Guild member data, if it exists, is included if the with_member query parameter is set.
      *
-     * @link https://discord.com/developers/docs/resources/guild-scheduled-event#get-guild-scheduled-event-users
+     * @see https://discord.com/developers/docs/resources/guild-scheduled-event#get-guild-scheduled-event-users
      *
      * @throws \RangeException
      *
@@ -105,11 +96,11 @@ class ScheduledEvent extends Part
         $resolver->setAllowedTypes('before', [User::class, 'string']);
         $resolver->setAllowedTypes('after', [User::class, 'string']);
         $resolver->setAllowedTypes('with_member', 'bool');
-        $resolver->setAllowedValues('limit', fn ($value) => ($value >= 1 && $value <= 100));
+        $resolver->setAllowedValues('limit', range(1, 100));
 
         $options = $resolver->resolve($options);
         if (isset($options['before'], $options['after'])) {
-            return reject(new \RangeException('Can only specify one of before after.'));
+            return \React\Promise\reject(new \RangeException('Can only specify one of before after.'));
         }
 
         $endpoint = Endpoint::bind(Endpoint::GUILD_SCHEDULED_EVENT_USERS, $this->guild_id, $this->id);
@@ -126,14 +117,12 @@ class ScheduledEvent extends Part
         return $this->http->get($endpoint)->then(function ($responses) {
             $users = new Collection();
 
-            $guild = $this->guild;
-
             foreach ($responses as $response) {
-                if (isset($response->member) && ! $user = $guild->members->get('id', $response->user->id)) {
-                    $user = $guild->members->create((array) $response->member, true);
-                    $guild->members->pushItem($user);
+                if (isset($response->member) && ! $user = $this->guild->members->get('id', $response->user->id)) {
+                    $user = $this->factory->create(Member::class, $response->member, true);
+                    $this->guild->members->pushItem($user);
                 } elseif (! $user = $this->discord->users->get('id', $response->user->id)) {
-                    $user = $this->discord->users->create((array) $response->user, true);
+                    $user = $this->factory->create(User::class, $response->user, true);
                     $this->discord->users->pushItem($user);
                 }
 
@@ -157,18 +146,12 @@ class ScheduledEvent extends Part
     /**
      * Returns the channel attribute.
      *
-     * @return Channel|null The channel in which the scheduled event will be hosted, or null.
+     * @return Channel The channel in which the scheduled event will be hosted, or null.
      */
     protected function getChannelAttribute(): ?Channel
     {
         if (! isset($this->attributes['channel_id'])) {
             return null;
-        }
-
-        if ($guild = $this->guild) {
-            if ($channel = $guild->channels->get('id', $this->channel_id)) {
-                return $channel;
-            }
         }
 
         return $this->discord->getChannel($this->attributes['channel_id']);
@@ -202,17 +185,17 @@ class ScheduledEvent extends Part
      *
      * @return string|null The guild scheduled event cover image hash if exists.
      */
-    protected function getImageHashAttribute(): ?string
+    protected function getImageHashAttribute()
     {
-        return $this->attributes['image'] ?? null;
+        return $this->attributes['image'];
     }
 
     /**
      * Returns the created at attribute.
      *
-     * @return Carbon The time the scheduled event will start.
-     *
      * @throws \Exception
+     *
+     * @return Carbon The time the scheduled event will start.
      */
     protected function getScheduledStartTimeAttribute(): Carbon
     {
@@ -222,9 +205,9 @@ class ScheduledEvent extends Part
     /**
      * Returns the created at attribute.
      *
-     * @return Carbon|null The time the scheduled event will end, required if entity_type is EXTERNAL.
-     *
      * @throws \Exception
+     *
+     * @return Carbon|null The time the scheduled event will end, required if entity_type is EXTERNAL.
      */
     protected function getScheduledEndTimeAttribute(): ?Carbon
     {
@@ -258,9 +241,7 @@ class ScheduledEvent extends Part
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @link https://discord.com/developers/docs/resources/guild-scheduled-event#create-guild-scheduled-event-json-params
+     * @inheritdoc
      */
     public function getCreatableAttributes(): array
     {
@@ -273,44 +254,31 @@ class ScheduledEvent extends Part
             'scheduled_end_time' => $this->attributes['scheduled_end_time'],
             'description' => $this->description,
             'entity_type' => $this->entity_type,
-            'image' => $this->image_hash,
+            'image' => $this->attributes['image'],
         ];
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @link https://discord.com/developers/docs/resources/guild-scheduled-event#modify-guild-scheduled-event-json-params
+     * @inheritdoc
      */
     public function getUpdatableAttributes(): array
     {
-        $attr = [
+        return [
+            'channel_id' => $this->channel_id,
+            'entity_metadata' => $this->entity_metadata,
             'name' => $this->name,
             'privacy_level' => $this->privacy_level,
             'scheduled_start_time' => $this->attributes['scheduled_start_time'],
             'scheduled_end_time' => $this->attributes['scheduled_end_time'],
+            'description' => $this->description,
             'entity_type' => $this->entity_type,
             'status' => $this->status,
-            'image' => $this->image_hash,
+            'image' => $this->attributes['image'],
         ];
-
-        if (array_key_exists('channel_id', $this->attributes)) {
-            $attr['channel_id'] = $this->channel_id;
-        }
-
-        if (array_key_exists('entity_metadata', $this->attributes)) {
-            $attr['entity_metadata'] = $this->entity_metadata;
-        }
-
-        if (array_key_exists('description', $this->attributes)) {
-            $attr['description'] = $this->description;
-        }
-
-        return $attr;
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function getRepositoryAttributes(): array
     {

@@ -14,10 +14,8 @@ namespace Discord\Helpers;
 use React\Promise\ExtendedPromiseInterface;
 
 /**
- * Expands on the react/promise PromisorInterface by returning an extended
- * promise.
- *
- * @since 5.0.12
+ * Expands on the react/promise PromisorInterface
+ * by returning an extended promise.
  */
 interface ExtendedPromisorInterface
 {

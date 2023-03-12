@@ -16,23 +16,20 @@ use Discord\Parts\Guild\Role;
 use Discord\Repository\AbstractRepository;
 
 /**
- * Contains roles of a guild.
+ * Contains roles that belong to the guild.
  *
- * @since 4.0.0
- *
- * @see Role
+ * @see \Discord\Parts\Guild\Role
  * @see \Discord\Parts\Guild\Guild
  *
- * @method Role|null get(string $discrim, $key)
- * @method Role|null pull(string|int $key, $default = null)
- * @method Role|null first()
- * @method Role|null last()
- * @method Role|null find()
+ * @method Role|null get(string $discrim, $key)  Gets an item from the collection.
+ * @method Role|null first()                     Returns the first element of the collection.
+ * @method Role|null pull($key, $default = null) Pulls an item from the repository, removing and returning the item.
+ * @method Role|null find(callable $callback)    Runs a filter callback over the repository.
  */
 class RoleRepository extends AbstractRepository
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     protected $endpoints = [
         'all' => Endpoint::GUILD_ROLES,
@@ -42,7 +39,7 @@ class RoleRepository extends AbstractRepository
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     protected $class = Role::class;
 }

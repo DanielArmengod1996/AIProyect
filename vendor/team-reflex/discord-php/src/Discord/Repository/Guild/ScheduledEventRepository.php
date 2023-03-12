@@ -16,26 +16,21 @@ use Discord\Parts\Guild\ScheduledEvent;
 use Discord\Repository\AbstractRepository;
 use React\Promise\ExtendedPromiseInterface;
 
-use function React\Promise\resolve;
-
 /**
- * Contains scheduled events on a guild.
+ * Contains scheduled events to guilds.
  *
- * @see ScheduledEvent
+ * @see \Discord\Parts\Guild\ScheduledEvent
  * @see \Discord\Parts\Guild\Guild
  *
- * @since 7.0.0
- *
- * @method ScheduledEvent|null get(string $discrim, $key)
- * @method ScheduledEvent|null pull(string|int $key, $default = null)
- * @method ScheduledEvent|null first()
- * @method ScheduledEvent|null last()
- * @method ScheduledEvent|null find()
+ * @method ScheduledEvent|null get(string $discrim, $key)  Gets an item from the collection.
+ * @method ScheduledEvent|null first()                     Returns the first element of the collection.
+ * @method ScheduledEvent|null pull($key, $default = null) Pulls an item from the repository, removing and returning the item.
+ * @method ScheduledEvent|null find(callable $callback)    Runs a filter callback over the repository.
  */
 class ScheduledEventRepository extends AbstractRepository
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     protected $endpoints = [
         'all' => Endpoint::GUILD_SCHEDULED_EVENTS,
@@ -46,16 +41,14 @@ class ScheduledEventRepository extends AbstractRepository
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     protected $class = ScheduledEvent::class;
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      *
      * @param bool $with_user_count Whether to include number of users subscribed to each event
-     *
-     * @return ExtendedPromiseInterface<ScheduledEvent>
      */
     public function fetch(string $id, bool $fresh = false, bool $with_user_count = false): ExtendedPromiseInterface
     {
@@ -65,23 +58,21 @@ class ScheduledEventRepository extends AbstractRepository
 
         if (! $fresh && $part = $this->get($this->discrim, $id)) {
             if (isset($part->user_count)) {
-                return resolve($part);
+                return \React\Promise\resolve($part);
             }
         }
 
-        $part = $this->factory->part($this->class, [$this->discrim => $id]);
+        $part = $this->factory->create($this->class, [$this->discrim => $id]);
         $endpoint = new Endpoint($this->endpoints['get']);
         $endpoint->bindAssoc(array_merge($part->getRepositoryAttributes(), $this->vars));
 
         $endpoint->addQuery('with_user_count', $with_user_count);
 
-        return $this->http->get($endpoint)->then(function ($response) use ($part, $id) {
-            $part->fill(array_merge($this->vars, (array) $response));
-            $part->created = true;
+        return $this->http->get($endpoint)->then(function ($response) {
+            $part = $this->factory->create($this->class, array_merge($this->vars, (array) $response), true);
+            $this->push($part);
 
-            return $this->cache->set($id, $part)->then(function ($success) use ($part) {
-                return $part;
-            });
+            return $part;
         });
     }
 }

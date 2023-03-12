@@ -12,32 +12,26 @@
 namespace Discord\WebSockets\Events;
 
 use Discord\WebSockets\Event;
+use Discord\Helpers\Deferred;
 use Discord\Parts\User\User;
 
-/**
- * @link https://discord.com/developers/docs/topics/gateway-events#user-update
- *
- * @since 7.0.0
- */
 class UserUpdate extends Event
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
-    public function handle($data)
+    public function handle(Deferred &$deferred, $data): void
     {
         $oldUser = null;
 
         /** @var User */
-        if ($oldUser = yield $this->discord->users->cacheGet($data->id)) {
+        if ($oldUser = $this->discord->users->offsetGet($data->id)) {
             $userPart = clone $oldUser;
             $userPart->fill((array) $data);
         } else {
-            /** @var User */
-            $userPart = $this->discord->users->create((array) $data, true);
+            $userPart = $this->factory->create(User::class, $data, true);
         }
-        $this->discord->users->set($data->id, $userPart);
 
-        return [$userPart, $oldUser];
+        $deferred->resolve([$userPart, $oldUser]);
     }
 }

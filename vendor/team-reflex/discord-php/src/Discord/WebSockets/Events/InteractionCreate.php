@@ -11,23 +11,21 @@
 
 namespace Discord\WebSockets\Events;
 
+use Discord\Helpers\Deferred;
 use Discord\InteractionType;
-use Discord\Parts\Guild\Guild;
 use Discord\Parts\Interactions\Interaction;
-use Discord\Repository\Guild\MemberRepository;
+use Discord\Parts\User\User;
 use Discord\WebSockets\Event;
 
 /**
- * @link https://discord.com/developers/docs/topics/gateway-events#interaction-create
- *
- * @since 6.0.0
+ * @see https://discord.com/developers/docs/topics/gateway#interaction-create
  */
 class InteractionCreate extends Event
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
-    public function handle($data)
+    public function handle(Deferred &$deferred, $data): void
     {
         /** @var Interaction */
         $interaction = $this->factory->part(Interaction::class, (array) $data, true);
@@ -36,23 +34,11 @@ class InteractionCreate extends Event
             if ($userPart = $this->discord->users->get('id', $snowflake)) {
                 $userPart->fill((array) $user);
             } else {
-                $this->discord->users->pushItem($this->discord->users->create((array) $user, true));
+                $this->discord->users->pushItem($this->factory->part(User::class, (array) $user, true));
             }
         }
 
-        if (isset($data->member)) {
-            // Do not load guild from cache as it may delay interaction codes.
-            /** @var ?Guild */
-            if ($guild = $this->discord->guilds->offsetGet($data->guild_id)) {
-                $members = $guild->members;
-
-                foreach ($data->data->resolved->members ?? [] as $snowflake => $member) {
-                    $this->cacheMember($members, (array) $member + ['user' => $data->data->resolved->users->$snowflake]);
-                }
-
-                $this->cacheMember($members, (array) $data->member);
-            }
-
+        if (isset($data->member->user)) {
             // User caching from member
             $this->cacheUser($data->member->user);
         }
@@ -65,7 +51,9 @@ class InteractionCreate extends Event
         if ($data->type == InteractionType::APPLICATION_COMMAND) {
             $command = $data->data;
             if (isset($this->discord->application_commands[$command->name])) {
-                $this->discord->application_commands[$command->name]->execute($command->options ?? [], $interaction);
+                if ($this->discord->application_commands[$command->name]->execute($command->options ?? [], $interaction)) {
+                    return;
+                }
             }
         } elseif ($data->type == InteractionType::APPLICATION_COMMAND_AUTOCOMPLETE) {
             $command = $data->data;
@@ -86,23 +74,12 @@ class InteractionCreate extends Event
 
                     return false;
                 };
-                $checkCommand($this->discord->application_commands[$command->name], $command->options);
+                if ($checkCommand($this->discord->application_commands[$command->name], $command->options)) {
+                    return;
+                }
             }
         }
 
-        return $interaction;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function cacheMember(MemberRepository $members, array $memberdata)
-    {
-        // Do not load members from cache as it may delay interaction codes.
-        if ($member = $members->offsetGet('id', $memberdata['user']->id)) {
-            $member->fill($memberdata);
-        } else {
-            $members->pushItem($members->create($memberdata, true));
-        }
+        $deferred->resolve($interaction);
     }
 }

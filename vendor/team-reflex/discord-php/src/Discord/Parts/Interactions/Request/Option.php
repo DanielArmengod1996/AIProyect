@@ -11,58 +11,48 @@
 
 namespace Discord\Parts\Interactions\Request;
 
-use Discord\Helpers\Collection;
-use Discord\Parts\Interactions\Command\Option as CommandOption;
 use Discord\Parts\Part;
+use Discord\Repository\Interaction\OptionRepository;
 
 /**
  * Represents an option received with an interaction.
  *
- * @link https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-interaction-data-option-structure
+ * @see https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-interaction-data-option-structure
  *
- * @since 7.0.0
- *
- * @property string                   $name    Name of the parameter.
- * @property int                      $type    Type of the option.
- * @property string|int|float|null    $value   Value of the option resulting from user input.
- * @property Collection|Option[]|null $options Present if this option is a group or subcommand.
- * @property bool|null                $focused `true` if this option is the currently focused option for autocomplete.
+ * @property string           $name    Name of the option.
+ * @property int              $type    Type of the option.
+ * @property mixed            $value   Value of the option.
+ * @property OptionRepository $options Sub-options if applicable.
+ * @property bool             $focused Whether this option is the currently focused option for autocomplete.
  */
 class Option extends Part
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
-    protected $fillable = [
-        'name',
-        'type',
-        'value',
-        'options',
-        'focused',
+    protected $fillable = ['name', 'type', 'value', 'options', 'focused'];
+
+    /**
+     * @inheritdoc
+     */
+    protected $repositories = [
+        'options' => OptionRepository::class,
     ];
 
     /**
-     * Gets the options of the interaction.
+     * Sets the sub-options of the option.
      *
-     * @return Collection|Option[]|null $options
+     * @param array $options
      */
-    protected function getOptionsAttribute(): ?Collection
+    protected function setOptionsAttribute($options)
     {
-        if (! isset($this->attributes['options']) && ! in_array($this->type, [CommandOption::SUB_COMMAND, CommandOption::SUB_COMMAND_GROUP])) {
-            return null;
+        foreach ($options as $option) {
+            $this->options->pushItem($this->factory->create(Option::class, $option, true));
         }
-
-        $options = Collection::for(Option::class, 'name');
-
-        foreach ($this->attributes['options'] ?? [] as $option) {
-            $options->pushItem($this->factory->part(Option::class, (array) $option, true));
-        }
-
-        return $options;
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function getRepositoryAttributes(): array
     {

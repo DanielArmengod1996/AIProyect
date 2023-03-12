@@ -19,9 +19,7 @@ use function Discord\poly_strlen;
 /**
  * Option represents an array of options that can be given to a command.
  *
- * @link https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-structure
- *
- * @since 7.0.0
+ * @see https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-structure
  *
  * @property int                      $type                      Type of the option.
  * @property string                   $name                      Name of the option.
@@ -53,7 +51,7 @@ class Option extends Part
     public const ATTACHMENT = 11;
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     protected $fillable = [
         'type',
@@ -79,14 +77,14 @@ class Option extends Part
      */
     protected function getChoicesAttribute(): ?Collection
     {
-        if (! isset($this->attributes['choices']) && ! in_array($this->type, [self::STRING, self::INTEGER, self::NUMBER])) {
+        if (! isset($this->attributes['choices'])) {
             return null;
         }
 
         $choices = Collection::for(Choice::class, null);
 
-        foreach ($this->attributes['choices'] ?? [] as $choice) {
-            $choices->pushItem($this->factory->part(Choice::class, (array) $choice, true));
+        foreach ($this->attributes['choices'] as $choice) {
+            $choices->pushItem($this->factory->create(Choice::class, $choice, true));
         }
 
         return $choices;
@@ -102,7 +100,7 @@ class Option extends Part
         $options = Collection::for(Option::class, null);
 
         foreach ($this->attributes['options'] ?? [] as $option) {
-            $options->pushItem($this->factory->part(Option::class, (array) $option, true));
+            $options->pushItem($this->factory->create(Option::class, $option, true));
         }
 
         return $options;
@@ -115,7 +113,7 @@ class Option extends Part
      *
      * @throws \InvalidArgumentException `$type` is not 1-11.
      *
-     * @return $this
+     * @return self
      */
     public function setType(int $type): self
     {
@@ -138,7 +136,7 @@ class Option extends Part
      *
      * @throws \LengthException `$name` is more than 32 characters.
      *
-     * @return $this
+     * @return self
      */
     public function setName(string $name): self
     {
@@ -162,7 +160,7 @@ class Option extends Part
      *
      * @throws \LengthException `$name` is more than 32 characters.
      *
-     * @return $this
+     * @return self
      */
     public function setNameLocalization(string $locale, ?string $name): self
     {
@@ -182,7 +180,7 @@ class Option extends Part
      *
      * @throws \LengthException `$description` is more than 100 characters.
      *
-     * @return $this
+     * @return self
      */
     public function setDescription(string $description): self
     {
@@ -203,7 +201,7 @@ class Option extends Part
      *
      * @throws \LengthException `$description` is more than 100 characters.
      *
-     * @return $this
+     * @return self
      */
     public function setDescriptionLocalization(string $locale, ?string $description): self
     {
@@ -221,7 +219,7 @@ class Option extends Part
      *
      * @param bool $required requirement of the option (default false)
      *
-     * @return $this
+     * @return self
      */
     public function setRequired(bool $required = false): self
     {
@@ -235,7 +233,7 @@ class Option extends Part
      *
      * @param array|null $types types of the channel.
      *
-     * @return $this
+     * @return self
      */
     public function setChannelTypes(?array $types): self
     {
@@ -251,7 +249,7 @@ class Option extends Part
      *
      * @throws \OverflowException Command exceeds maximum 25 sub options.
      *
-     * @return $this
+     * @return self
      */
     public function addOption(Option $option): self
     {
@@ -271,7 +269,7 @@ class Option extends Part
      *
      * @throws \OverflowException Command exceeds maximum 25 choices.
      *
-     * @return $this
+     * @return self
      */
     public function addChoice(Choice $choice): self
     {
@@ -289,7 +287,7 @@ class Option extends Part
      *
      * @param string|Option $option Option object or name to remove.
      *
-     * @return $this
+     * @return self
      */
     public function removeOption($option): self
     {
@@ -297,10 +295,12 @@ class Option extends Part
             $option = $option->name;
         }
 
-        foreach ($this->attributes['options'] ?? [] as $idx => $opt) {
-            if ($opt['name'] == $option) {
-                unset($this->attributes['options'][$idx]);
-                break;
+        if (! empty($this->attributes['options'])) {
+            foreach ($this->attributes['options'] as $idx => $opt) {
+                if ($opt['name'] == $option) {
+                    unset($this->attributes['options'][$idx]);
+                    break;
+                }
             }
         }
 
@@ -312,7 +312,7 @@ class Option extends Part
      *
      * @param string|Choice $choice Choice object or name to remove.
      *
-     * @return $this
+     * @return self
      */
     public function removeChoice($choice): self
     {
@@ -320,10 +320,12 @@ class Option extends Part
             $choice = $choice->name;
         }
 
-        foreach ($this->attributes['choices'] ?? [] as $idx => $cho) {
-            if ($cho['name'] == $choice) {
-                unset($this->attributes['choices'][$idx]);
-                break;
+        if (! empty($this->attributes['choices'])) {
+            foreach ($this->attributes['choices'] as $idx => $cho) {
+                if ($cho['name'] == $choice) {
+                    unset($this->attributes['choices'][$idx]);
+                    break;
+                }
             }
         }
 
@@ -335,7 +337,7 @@ class Option extends Part
      *
      * @param int|float|null $min_value integer for INTEGER options, double for NUMBER options.
      *
-     * @return $this
+     * @return self
      */
     public function setMinValue($min_value): self
     {
@@ -349,7 +351,7 @@ class Option extends Part
      *
      * @param int|float|null $max_value integer for INTEGER options, double for NUMBER options
      *
-     * @return $this
+     * @return self
      */
     public function setMaxValue($max_value): self
     {
@@ -366,7 +368,7 @@ class Option extends Part
      * @throws \LogicException
      * @throws \LengthException
      *
-     * @return $this
+     * @return self
      */
     public function setMinLength(?int $min_length): self
     {
@@ -391,7 +393,7 @@ class Option extends Part
      * @throws \LogicException
      * @throws \LengthException
      *
-     * @return $this
+     * @return self
      */
     public function setMaxLength(?int $max_length): self
     {
@@ -413,19 +415,19 @@ class Option extends Part
      *
      * @param bool|null $autocomplete enable autocomplete interactions for this option.
      *
-     * @throws \DomainException Command option type is not string/integer/number.
+     * @throws \InvalidArgumentException Command option type is not string/integer/number.
      *
-     * @return $this
+     * @return self
      */
     public function setAutoComplete(?bool $autocomplete): self
     {
         if ($autocomplete) {
             if (! empty($this->attributes['choices'])) {
-                throw new \DomainException('Autocomplete may not be set to true if choices are present.');
+                throw new \InvalidArgumentException('Autocomplete may not be set to true if choices are present.');
             }
 
             if (! in_array($this->type, [self::STRING, self::INTEGER, self::NUMBER])) {
-                throw new \DomainException('Autocomplete may be only set to true if option type is STRING, INTEGER, or NUMBER.');
+                throw new \InvalidArgumentException('Autocomplete may be only set to true if option type is STRING, INTEGER, or NUMBER.');
             }
         }
 

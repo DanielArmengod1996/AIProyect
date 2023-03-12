@@ -16,22 +16,19 @@ use Discord\Parts\Guild\Guild;
 use React\Promise\ExtendedPromiseInterface;
 
 /**
- * Contains guilds that the client is in.
+ * Contains guilds that the user is in.
  *
- * @see Guild
+ * @see \Discord\Parts\Guild\Guild
  *
- * @since 4.0.0
- *
- * @method Guild|null get(string $discrim, $key)
- * @method Guild|null pull(string|int $key, $default = null)
- * @method Guild|null first()
- * @method Guild|null last()
- * @method Guild|null find()
+ * @method Guild|null get(string $discrim, $key)  Gets an item from the collection.
+ * @method Guild|null first()                     Returns the first element of the collection.
+ * @method Guild|null pull($key, $default = null) Pulls an item from the repository, removing and returning the item.
+ * @method Guild|null find(callable $callback)    Runs a filter callback over the repository.
  */
 class GuildRepository extends AbstractRepository
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     protected $endpoints = [
         'all' => Endpoint::USER_CURRENT_GUILDS,
@@ -43,16 +40,16 @@ class GuildRepository extends AbstractRepository
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     protected $class = Guild::class;
 
     /**
      * Causes the client to leave a guild.
      *
-     * @link https://discord.com/developers/docs/resources/user#leave-guild
+     * @see https://discord.com/developers/docs/resources/user#leave-guild
      *
-     * @param Guild|string $guild
+     * @param Guild|snowflake $guild
      *
      * @return ExtendedPromiseInterface
      */
@@ -63,9 +60,9 @@ class GuildRepository extends AbstractRepository
         }
 
         return $this->http->delete(Endpoint::bind(Endpoint::USER_CURRENT_GUILD, $guild))->then(function () use ($guild) {
-            return $this->cache->delete($guild)->then(function ($success) {
-                return $this;
-            });
+            $this->pull('id', $guild);
+
+            return $this;
         });
     }
 }

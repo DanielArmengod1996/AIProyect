@@ -11,28 +11,36 @@
 
 namespace Discord\WebSockets\Events;
 
-use Discord\Helpers\Collection;
 use Discord\WebSockets\Event;
+use Discord\Helpers\Deferred;
+use React\Promise\ExtendedPromiseInterface;
+
+use function React\Promise\all as All;
 
 /**
- * @link https://discord.com/developers/docs/topics/gateway-events#message-delete-bulk
- *
- * @since 4.0.0
+ * @see https://discord.com/developers/docs/topics/gateway#message-delete-bulk
  */
 class MessageDeleteBulk extends Event
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
-    public function handle($data)
+    public function handle(Deferred &$deferred, $data): void
     {
-        $resolved = new Collection();
+        $promises = [];
 
         foreach ($data->ids as $id) {
-            $event = new MessageDelete($this->discord);
-            $resolved->pushItem(yield from $event->handle((object) ['id' => $id, 'channel_id' => $data->channel_id, 'guild_id' => $data->guild_id]));
+            $promise = new Deferred();
+            $event = new MessageDelete($this->http, $this->factory, $this->discord);
+            $event->handle($promise, (object) ['id' => $id, 'channel_id' => $data->channel_id, 'guild_id' => $data->guild_id]);
+
+            $promises[] = $promise->promise();
         }
 
-        return $resolved;
+        /** @var ExtendedPromiseInterface */
+        $allPromise = All($promises);
+        $allPromise->done(function ($messages) use ($deferred) {
+            $deferred->resolve($messages);
+        });
     }
 }

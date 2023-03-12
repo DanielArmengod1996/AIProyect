@@ -19,11 +19,11 @@ use Discord\Http\Http;
 use JsonSerializable;
 use React\Promise\ExtendedPromiseInterface;
 
+use function Discord\studly;
+
 /**
- * This class is the base of all objects that are returned. All "Parts" extend
- * off this base class.
- *
- * @since 2.0.0
+ * This class is the base of all objects that are returned. All "Parts" extend off this
+ * base class.
  */
 abstract class Part implements ArrayAccess, JsonSerializable
 {
@@ -53,8 +53,6 @@ abstract class Part implements ArrayAccess, JsonSerializable
      * Used for storing custom information, used by end products.
      *
      * @var mixed
-     *
-     * @deprecated 10.0.0 Relying on this variable with dynamic caching is discouraged.
      */
     public $scriptData;
 
@@ -108,6 +106,20 @@ abstract class Part implements ArrayAccess, JsonSerializable
     public $created = false;
 
     /**
+     * The regex pattern to replace variables with.
+     *
+     * @var string The regex which is used to replace placeholders.
+     */
+    protected $regex = '/:([a-z_]+)/';
+
+    /**
+     * Should we fill the part after saving?
+     *
+     * @var bool Whether the part will be saved after being filled.
+     */
+    protected $fillAfterSave = true;
+
+    /**
      * Create a new part instance.
      *
      * @param Discord $discord    The Discord client.
@@ -117,8 +129,8 @@ abstract class Part implements ArrayAccess, JsonSerializable
     public function __construct(Discord $discord, array $attributes = [], bool $created = false)
     {
         $this->discord = $discord;
-        $this->http = $discord->getHttpClient();
         $this->factory = $discord->getFactory();
+        $this->http = $discord->getHttpClient();
 
         $this->created = $created;
         $this->fill($attributes);
@@ -134,8 +146,9 @@ abstract class Part implements ArrayAccess, JsonSerializable
     }
 
     /**
-     * Whether the part is considered partial i.e. missing information which can
-     * be fetched from Discord.
+     * Whether the part is considered partial
+     * i.e. missing information which can be
+     * fetched from Discord.
      *
      * @return bool
      */
@@ -145,11 +158,12 @@ abstract class Part implements ArrayAccess, JsonSerializable
     }
 
     /**
-     * Fetches any missing information about the part from Discord's servers.
+     * Fetches any missing information about
+     * the part from Discord's servers.
      *
      * @throws \RuntimeException The part is not fetchable.
      *
-     * @return ExtendedPromiseInterface<self>
+     * @return ExtendedPromiseInterface<static>
      */
     public function fetch(): ExtendedPromiseInterface
     {
@@ -163,9 +177,9 @@ abstract class Part implements ArrayAccess, JsonSerializable
      */
     public function fill(array $attributes): void
     {
-        foreach ($this->fillable as $key) {
-            if (array_key_exists($key, $attributes)) {
-                $this->setAttribute($key, $attributes[$key]);
+        foreach ($attributes as $key => $value) {
+            if (in_array($key, $this->fillable)) {
+                $this->setAttribute($key, $value);
             }
         }
     }
@@ -180,7 +194,7 @@ abstract class Part implements ArrayAccess, JsonSerializable
      */
     private function checkForMutator(string $key, string $type)
     {
-        $str = $type.static::studly($key).'Attribute';
+        $str = $type.studly($key).'Attribute';
 
         if (is_callable([$this, $str])) {
             return $str;
@@ -245,7 +259,7 @@ abstract class Part implements ArrayAccess, JsonSerializable
      * @return mixed
      *
      * @throws \Exception
-     * @see Part::getAttribute() This function forwards onto getAttribute.
+     * @see self::getAttribute() This function forwards onto getAttribute.
      */
     #[\ReturnTypeWillChange]
     public function offsetGet($key)
@@ -271,7 +285,8 @@ abstract class Part implements ArrayAccess, JsonSerializable
      * @param string $key   The attribute key.
      * @param mixed  $value The attribute value.
      *
-     * @see Part::setAttribute() This function forwards onto setAttribute.
+     *
+     * @see self::setAttribute() This function forwards onto setAttribute.
      */
     public function offsetSet($key, $value): void
     {
@@ -293,16 +308,16 @@ abstract class Part implements ArrayAccess, JsonSerializable
     /**
      * Serializes the data. Used for Serializable.
      *
-     * @return ?string A string of serialized data.
+     * @return string A string of serialized data.
      */
-    public function serialize(): ?string
+    public function serialize()
     {
-        return serialize($this->getRawAttributes());
+        return serialize($this->attributes);
     }
 
     public function __serialize(): array
     {
-        return $this->getRawAttributes();
+        return $this->attributes;
     }
 
     /**
@@ -310,9 +325,9 @@ abstract class Part implements ArrayAccess, JsonSerializable
      *
      * @param string $data Some serialized data.
      *
-     * @see Part::setAttribute() The unserialized data is stored with setAttribute.
+     * @see self::setAttribute() The unserialized data is stored with setAttribute.
      */
-    public function unserialize($data): void
+    public function unserialize($data)
     {
         $data = unserialize($data);
 
@@ -320,7 +335,7 @@ abstract class Part implements ArrayAccess, JsonSerializable
             $this->setAttribute($key, $value);
         }
     }
-
+    
     public function __unserialize(array $data): void
     {
         foreach ($data as $key => $value) {
@@ -335,7 +350,7 @@ abstract class Part implements ArrayAccess, JsonSerializable
      * @return array An array of public attributes.
      *
      * @throws \Exception
-     * @see Part::getPublicAttributes() This function forwards onto getPublicAttributes.
+     * @see self::getPublicAttributes() This function forwards onto getPublicAttributes.
      */
     public function jsonSerialize(): array
     {
@@ -381,7 +396,6 @@ abstract class Part implements ArrayAccess, JsonSerializable
 
     /**
      * Gets the attributes to pass to repositories.
-     * Note: The order matters for repository tree (top to bottom).
      *
      * @return array Attributes.
      */
@@ -411,44 +425,14 @@ abstract class Part implements ArrayAccess, JsonSerializable
     }
 
     /**
-     * Converts a string to studlyCase.
-     *
-     * This is a port of updated Laravel's implementation, a non-regex with
-     * static cache. The Discord\studly() is kept due to unintended bug and we
-     * do not want to introduce BC by replacing it. This method is private
-     * static as we may move it outside this class in future.
-     *
-     * @param string $string The string to convert.
-     *
-     * @return string
-     *
-     * @since 10.0.0
-     */
-    private static function studly(string $string): string
-    {
-        static $studlyCache = [];
-        $key = $string;
-
-        if (isset($studlyCache[$key])) {
-            return $studlyCache[$key];
-        }
-
-        $words = explode(' ', str_replace(['-', '_'], ' ', $string));
-
-        $studlyWords = array_map(fn ($word) => ucfirst($word), $words);
-
-        return $studlyCache[$key] = implode($studlyWords);
-    }
-
-    /**
      * Converts the part to a string.
      *
      * @return string A JSON string of attributes.
      *
      * @throws \Exception
-     * @see Part::getPublicAttributes() This function encodes getPublicAttributes into JSON.
+     * @see self::getPublicAttributes() This function encodes getPublicAttributes into JSON.
      */
-    public function __toString(): string
+    public function __toString()
     {
         return json_encode($this->getPublicAttributes());
     }
@@ -459,7 +443,7 @@ abstract class Part implements ArrayAccess, JsonSerializable
      * @return array An array of public attributes.
      *
      * @throws \Exception
-     * @see Part::getPublicAttributes() This function forwards onto getPublicAttributes.
+     * @see self::getPublicAttributes() This function forwards onto getPublicAttributes.
      */
     public function __debugInfo(): array
     {
@@ -474,7 +458,7 @@ abstract class Part implements ArrayAccess, JsonSerializable
      * @return mixed The value of the attribute.
      *
      * @throws \Exception
-     * @see Part::getAttribute() This function forwards onto getAttribute.
+     * @see self::getAttribute() This function forwards onto getAttribute.
      */
     public function __get(string $key)
     {
@@ -489,7 +473,7 @@ abstract class Part implements ArrayAccess, JsonSerializable
      *
      * @see self::setAttribute() This function forwards onto setAttribute.
      */
-    public function __set(string $key, $value): void
+    public function __set(string $key, $value)
     {
         $this->setAttribute($key, $value);
     }

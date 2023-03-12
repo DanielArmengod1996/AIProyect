@@ -10,7 +10,7 @@ Most events also requires the respective Intents enabled (as well privileged one
 To listen on gateway events, use the event emitter callback and `Event` name constants.
 Some events are internally handled by the library and may not be registered a listener:
 
-- `Event::READY`
+- `Event::READY` (not to be confused with `'ready'`)
 - `Event::RESUMED`
 - `Event::GUILD_MEMBERS_CHUNK`
 

@@ -18,26 +18,23 @@ use Discord\Parts\User\User;
 /**
  * An emoji object represents a custom emoji.
  *
- * @link https://discord.com/developers/docs/resources/emoji
+ * @see https://discord.com/developers/docs/resources/emoji
  *
- * @since 4.0.2
- *
- * @property ?string           $id             The identifier for the emoji.
+ * @property string            $id             The identifier for the emoji.
  * @property string            $name           The name of the emoji.
  * @property Collection|Role[] $roles          The roles that are allowed to use the emoji.
  * @property User|null         $user           User that created this emoji.
- * @property bool|null         $require_colons Whether the emoji requires colons to be triggered.
- * @property bool|null         $managed        Whether this emoji is managed by a role.
- * @property bool|null         $animated       Whether the emoji is animated.
- * @property bool|null         $available      Whether this emoji can be used, may be false due to loss of Server Boosts.
- *
- * @property      string|null $guild_id The identifier of the guild that owns the emoji.
- * @property-read Guild|null  $guild    The guild that owns the emoji.
+ * @property bool              $require_colons Whether the emoji requires colons to be triggered.
+ * @property bool              $managed        Whether this emoji is managed by a role.
+ * @property bool              $animated       Whether the emoji is animated.
+ * @property bool              $available      Whether this emoji can be used, may be false due to loss of Server Boosts.
+ * @property string|null       $guild_id       The identifier of the guild that owns the emoji.
+ * @property Guild|null        $guild          The guild that owns the emoji.
  */
 class Emoji extends Part
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     protected $fillable = [
         'id',
@@ -48,8 +45,6 @@ class Emoji extends Part
         'managed',
         'animated',
         'available',
-
-        // @internal
         'guild_id',
     ];
 
@@ -66,25 +61,17 @@ class Emoji extends Part
     /**
      * Returns the roles attribute.
      *
-     * @return Collection<?Role> A collection of roles for the emoji.
+     * @return Collection A collection of roles for the emoji.
      */
     protected function getRolesAttribute(): Collection
     {
-        $roles = new Collection();
-
-        if (empty($this->attributes['roles'])) {
-            return $roles;
+        if (! $this->guild) {
+            return new Collection();
         }
 
-        $roles->fill(array_fill_keys($this->attributes['roles'], null));
-
-        if ($guild = $this->guild) {
-            $roles->merge($guild->roles->filter(function ($role) {
-                return in_array($role->id, $this->attributes['roles']);
-            }));
-        }
-
-        return $roles;
+        return $this->guild->roles->filter(function ($role) {
+            return in_array($role->id, $this->attributes['roles']);
+        });
     }
 
     /**
@@ -134,25 +121,18 @@ class Emoji extends Part
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @link https://discord.com/developers/docs/resources/emoji#modify-guild-emoji-json-params
+     * @inheritdoc
      */
     public function getUpdatableAttributes(): array
     {
-        $attr = [
+        return [
             'name' => $this->name,
+            'roles' => $this->attributes['roles'],
         ];
-
-        if (array_key_exists('roles', $this->attributes)) {
-            $attr['roles'] = $this->attributes['roles'];
-        }
-
-        return $attr;
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function getRepositoryAttributes(): array
     {

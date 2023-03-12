@@ -16,8 +16,6 @@ namespace Discord\Exceptions;
  *
  * @see \Discord\Parts\Part::save() Can be thrown when being saved.
  * @see \Discord\Parts\Part::delete() Can be thrown when being deleted.
- *
- * @since 2.0.0
  */
 class PartRequestFailedException extends \Exception
 {

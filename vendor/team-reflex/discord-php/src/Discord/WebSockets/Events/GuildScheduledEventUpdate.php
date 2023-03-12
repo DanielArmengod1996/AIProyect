@@ -12,27 +12,23 @@
 namespace Discord\WebSockets\Events;
 
 use Discord\WebSockets\Event;
-use Discord\Parts\Guild\Guild;
+use Discord\Helpers\Deferred;
 use Discord\Parts\Guild\ScheduledEvent;
 
 /**
- * @link https://discord.com/developers/docs/topics/gateway-events#guild-scheduled-event-update
- *
- * @since 7.0.0
+ * @see https://discord.com/developers/docs/topics/gateway#guild-scheduled-event-update
  */
 class GuildScheduledEventUpdate extends Event
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
-    public function handle($data)
+    public function handle(Deferred &$deferred, $data): void
     {
         $scheduledEventPart = $oldScheduledEvent = null;
 
-        /** @var ?Guild */
-        if ($guild = yield $this->discord->guilds->cacheGet($data->guild_id)) {
-            /** @var ?ScheduledEvent */
-            if ($oldScheduledEvent = yield $guild->guild_scheduled_events->cacheGet($data->id)) {
+        if ($guild = $this->discord->guilds->get('id', $data->guild_id)) {
+            if ($oldScheduledEvent = $guild->guild_scheduled_events->get('id', $data->id)) {
                 // Swap
                 $scheduledEventPart = $oldScheduledEvent;
                 $oldScheduledEvent = clone $oldScheduledEvent;
@@ -41,19 +37,18 @@ class GuildScheduledEventUpdate extends Event
             }
         }
 
-        if ($scheduledEventPart === null) {
+        if (! $scheduledEventPart) {
             /** @var ScheduledEvent */
-            $scheduledEventPart = $this->factory->part(ScheduledEvent::class, (array) $data, true);
-        }
-
-        if (isset($guild)) {
-            $guild->guild_scheduled_events->set($data->id, $scheduledEventPart);
+            $scheduledEventPart = $this->factory->create(ScheduledEvent::class, $data, true);
+            if ($guild = $scheduledEventPart->guild) {
+                $guild->guild_scheduled_events->pushItem($scheduledEventPart);
+            }
         }
 
         if (isset($data->creator)) {
             $this->cacheUser($data->creator);
         }
 
-        return [$scheduledEventPart, $oldScheduledEvent];
+        $deferred->resolve([$scheduledEventPart, $oldScheduledEvent]);
     }
 }

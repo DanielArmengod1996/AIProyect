@@ -22,28 +22,24 @@ use React\Promise\ExtendedPromiseInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Webhooks are a low-effort way to post messages to channels in Discord. They
- * do not require a bot user or authentication to use.
+ * Webhooks are a low-effort way to post messages to channels in Discord. They do not require a bot user or authentication to use.
  *
- * @link https://discord.com/developers/docs/resources/webhook#webhook-resource
+ * @see https://discord.com/developers/docs/resources/webhook#webhook-resource
  *
- * @since 5.0.0
- *
- * @property      string       $id             The id of the webhook.
- * @property      int          $type           The type of webhook.
- * @property      ?string|null $guild_id       The guild ID this webhook is for, if any.
- * @property-read Guild|null   $guild          The guild this webhook is for, if any.
- * @property      ?string|null $channel_id     The channel ID this webhook is for, if any.
- * @property-read Channel|null $channel        The channel this webhook is for, if any.
- * @property      User|null    $user           The user that created the webhook.
- * @property      ?string      $name           The name of the webhook.
- * @property      ?string      $avatar         The avatar of the webhook.
- * @property      string|null  $token          The token of the webhook.
- * @property      ?string      $application_id The bot/OAuth2 application that created this webhook.
- * @property      object|null  $source_guild   The partial guild of the channel that this webhook is following (returned for Channel Follower Webhooks).
- * @property      object|null  $source_channel The partial channel that this webhook is following (returned for Channel Follower Webhooks).
- * @property      string|null  $url            The url used for executing the webhook (returned by the webhooks OAuth2 flow).
- *
+ * @property string                   $id             The id of the webhook.
+ * @property int                      $type           The type of webhook.
+ * @property ?string|null             $guild_id       The guild ID this is for, if any.
+ * @property Guild|null               $guild          The guild this is for, if any.
+ * @property ?string|null             $channel_id     The channel ID this is for, if any.
+ * @property Channel|null             $channel        The channel ID this is for, if any.
+ * @property User|null                $user           The user that created the webhook.
+ * @property ?string                  $name           The name of the webhook.
+ * @property ?string                  $avatar         The avatar of the webhook.
+ * @property string|null              $token          The token of the webhook.
+ * @property ?string                  $application_id The bot/OAuth2 application that created this webhook.
+ * @property object|null              $source_guild   The partial guild of the channel that this webhook is following (returned for Channel Follower Webhooks).
+ * @property object|null              $source_channel The partial channel that this webhook is following (returned for Channel Follower Webhooks).
+ * @property string|null              $url            The url used for executing the webhook (returned by the webhooks OAuth2 flow).
  * @property WebhookMessageRepository $messages
  */
 class Webhook extends Part
@@ -53,7 +49,7 @@ class Webhook extends Part
     public const TYPE_APPLICATION = 3;
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     protected $fillable = [
         'id',
@@ -71,7 +67,7 @@ class Webhook extends Part
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     protected $repositories = [
         'messages' => WebhookMessageRepository::class,
@@ -80,7 +76,7 @@ class Webhook extends Part
     /**
      * Executes the webhook with an array of data.
      *
-     * @link https://discord.com/developers/docs/resources/webhook#execute-webhook
+     * @see https://discord.com/developers/docs/resources/webhook#execute-webhook
      *
      * @param MessageBuilder|array $data
      * @param array                $queryparams Query string params to add to the request.
@@ -123,7 +119,7 @@ class Webhook extends Part
     /**
      * Edits a previously-sent webhook message from the same token.
      *
-     * @link https://discord.com/developers/docs/resources/webhook#edit-webhook-message
+     * @see https://discord.com/developers/docs/resources/webhook#edit-webhook-message
      *
      * @param string         $message_id  ID of the message to update.
      * @param MessageBuilder $builder     The new message.
@@ -156,7 +152,7 @@ class Webhook extends Part
 
         return $promise->then(function ($response) {
             $channel = $this->channel;
-            if (($channel && $message = $channel->messages->get('id', $response->id)) || $message = $this->messages->get('id', $response->id)) {
+            if ($channel && $message = $channel->messages->offsetGet($response->id)) {
                 $message->fill((array) $response);
 
                 return $message;
@@ -187,10 +183,8 @@ class Webhook extends Part
             return null;
         }
 
-        if ($guild = $this->guild) {
-            if ($channel = $guild->channels->get('id', $this->channel_id)) {
-                return $channel;
-            }
+        if ($this->guild && $channel = $this->guild->channels->get('id', $this->channel_id)) {
+            return $channel;
         }
 
         return $this->discord->getChannel($this->channel_id);
@@ -233,39 +227,30 @@ class Webhook extends Part
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @link https://discord.com/developers/docs/resources/webhook#create-webhook-json-params
+     * @inheritdoc
      */
     public function getCreatableAttributes(): array
     {
         return [
             'name' => $this->name,
-            'avatar' => $this->avatar ?? null,
+            'avatar' => $this->avatar,
         ];
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @link https://discord.com/developers/docs/resources/webhook#modify-webhook-json-params
+     * @inheritdoc
      */
     public function getUpdatableAttributes(): array
     {
-        $attr = [
+        return [
             'name' => $this->name,
+            'avatar' => $this->avatar,
             'channel_id' => $this->channel_id,
         ];
-
-        if (array_key_exists('avatar', $this->attributes)) {
-            $attr['avatar'] = $this->avatar;
-        }
-
-        return $attr;
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function getRepositoryAttributes(): array
     {

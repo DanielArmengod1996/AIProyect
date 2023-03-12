@@ -16,25 +16,23 @@ use Discord\Http\Endpoint;
 use Discord\Parts\User\Member;
 use Discord\Repository\AbstractRepository;
 use React\Promise\ExtendedPromiseInterface;
+use React\Promise\PromiseInterface;
 
 /**
  * Contains members of a guild.
  *
- * @since 4.0.0
- *
- * @see Member
+ * @see \Discord\Parts\User\Member
  * @see \Discord\Parts\Guild\Guild
  *
- * @method Member|null get(string $discrim, $key)
- * @method Member|null pull(string|int $key, $default = null)
- * @method Member|null first()
- * @method Member|null last()
- * @method Member|null find()
+ * @method Member|null get(string $discrim, $key)  Gets an item from the collection.
+ * @method Member|null first()                     Returns the first element of the collection.
+ * @method Member|null pull($key, $default = null) Pulls an item from the repository, removing and returning the item.
+ * @method Member|null find(callable $callback)    Runs a filter callback over the repository.
  */
 class MemberRepository extends AbstractRepository
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     protected $endpoints = [
         'all' => Endpoint::GUILD_MEMBERS,
@@ -44,27 +42,27 @@ class MemberRepository extends AbstractRepository
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     protected $class = Member::class;
 
     /**
      * Alias for `$member->delete()`.
      *
-     * @link https://discord.com/developers/docs/resources/guild#remove-guild-member
+     * @see https://discord.com/developers/docs/resources/guild#remove-guild-member
      *
      * @param Member      $member The member to kick.
      * @param string|null $reason Reason for Audit Log.
      *
-     * @return ExtendedPromiseInterface
+     * @return PromiseInterface
      */
-    public function kick(Member $member, ?string $reason = null): ExtendedPromiseInterface
+    public function kick(Member $member, ?string $reason = null): PromiseInterface
     {
         return $this->delete($member, $reason);
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      *
      * @param array $queryparams Query string params to add to the request, leave null to paginate all members (Warning: Be careful to use this on very large guild)
      */
@@ -89,16 +87,17 @@ class MemberRepository extends AbstractRepository
 
                     return;
                 } elseif (! $afterId) {
-                    $this->items = [];
+                    $this->clear();
                 }
 
                 foreach ($response as $value) {
-                    $lastValueId = $value->user->id;
+                    $value = array_merge($this->vars, (array) $value);
+                    $part = $this->factory->create($this->class, $value, true);
+
+                    $this->pushItem($part);
                 }
 
-                $this->cacheFreshen($response)->then(function () use ($paginate, $lastValueId) {
-                    $paginate($lastValueId);
-                });
+                $paginate($part->id);
             }, [$deferred, 'reject']);
         })();
 

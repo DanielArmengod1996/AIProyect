@@ -19,9 +19,7 @@ use function Discord\poly_strlen;
 /**
  * Choice represents a choice that can be given to a command.
  *
- * @link https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-choice-structure
- *
- * @since 7.0.0
+ * @see https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-choice-structure
  *
  * @property string           $name               1-100 character choice name.
  * @property ?string[]|null   $name_localizations Localization dictionary for the name field. Values follow the same restrictions as name.
@@ -30,13 +28,9 @@ use function Discord\poly_strlen;
 class Choice extends Part
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
-    protected $fillable = [
-        'name',
-        'name_localizations',
-        'value',
-    ];
+    protected $fillable = ['name', 'name_localizations', 'value'];
 
     /**
      * Creates a new Choice builder.
@@ -45,7 +39,7 @@ class Choice extends Part
      * @param string           $name    name of the choice
      * @param string|int|float $value   value of the choice
      *
-     * @return static
+     * @return self
      */
     public static function new(Discord $discord, string $name, $value): self
     {
@@ -57,9 +51,9 @@ class Choice extends Part
      *
      * @param string $name name of the choice
      *
-     * @throws \LengthException `$name` is not 1-100 characters long.
+     * @throws \LengthException
      *
-     * @return $this
+     * @return self
      */
     public function setName(string $name): self
     {
@@ -81,9 +75,9 @@ class Choice extends Part
      * @param string      $locale Discord locale code.
      * @param string|null $name   Localized name of the choice.
      *
-     * @throws \LengthException `$name` is not 1-100 characters long.
+     * @throws \LengthException
      *
-     * @return $this
+     * @return self
      */
     public function setNameLocalization(string $locale, ?string $name): self
     {
@@ -106,9 +100,9 @@ class Choice extends Part
      *
      * @param string|int|float $value value of the choice
      *
-     * @throws \LengthException `string $value` is not 1-100 characters long.
+     * @throws \LengthException
      *
-     * @return $this
+     * @return self
      */
     public function setValue($value): self
     {

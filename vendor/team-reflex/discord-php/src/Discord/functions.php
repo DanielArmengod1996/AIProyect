@@ -19,18 +19,15 @@ use Discord\Parts\Guild\Role;
 use Discord\Parts\Part;
 use Discord\Parts\User\Member;
 use Discord\Parts\User\User;
-use React\EventLoop\Loop;
 use React\EventLoop\LoopInterface;
+use React\Promise\ExtendedPromiseInterface;
 use React\Promise\Promise;
-use React\Promise\PromiseInterface;
 use Symfony\Component\OptionsResolver\Options;
 
 /**
  * The HTML Color Table.
  *
- * @var array HTML Color Table.
- *
- * @since 5.0.12
+ * @array HTML Color Table.
  */
 const COLORTABLE = [
     'indianred' => 0xcd5c5c, 'lightcoral' => 0xf08080, 'salmon' => 0xfa8072, 'darksalmon' => 0xe9967a,
@@ -79,8 +76,6 @@ const COLORTABLE = [
  * @param Message     $message The message to check.
  *
  * @return bool Whether the part was mentioned.
- *
- * @since 4.0.0
  */
 function mentioned($part, Message $message): bool
 {
@@ -101,8 +96,6 @@ function mentioned($part, Message $message): bool
  * @param int|string $color The color's int, hexcode or htmlname.
  *
  * @return int color
- *
- * @since 5.0.12
  */
 function getColor($color = 0): int
 {
@@ -131,8 +124,6 @@ function getColor($color = 0): int
  * @param array  $matches Array containing one or more phrases to match.
  *
  * @return bool
- *
- * @since 5.0.12
  */
 function contains(string $string, array $matches): bool
 {
@@ -151,8 +142,6 @@ function contains(string $string, array $matches): bool
  * @param string $string The string to convert.
  *
  * @return string
- *
- * @since 5.0.12
  */
 function studly(string $string): string
 {
@@ -172,8 +161,6 @@ function studly(string $string): string
  * @param string $str
  *
  * @return int
- *
- * @since 5.0.12
  */
 function poly_strlen($str)
 {
@@ -191,8 +178,6 @@ function poly_strlen($str)
  * @param string $filepath
  *
  * @return string
- *
- * @since 5.1.0
  */
 function imageToBase64(string $filepath): string
 {
@@ -213,13 +198,12 @@ function imageToBase64(string $filepath): string
 }
 
 /**
- * Takes a snowflake and calculates the time that the snowflake was generated.
+ * Takes a snowflake and calculates the time that the snowflake
+ * was generated.
  *
  * @param string|float $snowflake
  *
  * @return float
- *
- * @since 5.1.1
  */
 function getSnowflakeTimestamp(string $snowflake)
 {
@@ -247,11 +231,11 @@ function getSnowflakeTimestamp(string $snowflake)
 
 /**
  * For use with the Symfony options resolver.
- * For an option that takes a snowflake or part, returns the snowflake or the value of `id_field` on the part.
+ * For an option that takes a snowflake or part,
+ * returns the snowflake or the value of `id_field`
+ * on the part.
  *
  * @param string $id_field
- *
- * @since 6.0.0
  *
  * @internal
  */
@@ -274,8 +258,6 @@ function normalizePartId($id_field = 'id')
  * A backslash will be added before the each formatting symbol.
  *
  * @return string the escaped string unformatted as plain text
- *
- * @since 6.0.2
  */
 function escapeMarkdown(string $text): string
 {
@@ -285,24 +267,21 @@ function escapeMarkdown(string $text): string
 /**
  * Run a deferred search in array.
  *
- * @param array|object   $array    Traversable, use $collection->getIterator() if searching in Collection
- * @param callable       $callback The filter function to run
- * @param ?LoopInterface $loop     Loop interface, use $discord->getLoop()
+ * @param array|object  $array     Traversable, use $collection->getIterator() if searching in Collection
+ * @param callable      $callback  The filter function to run
+ * @param LoopInterface $loop      Loop interface, use $discord->getLoop()
+ * @param callable      $canceller Deprecated, use `cancel()` from the returned promise
  *
  * @return Promise
- *
- * @since 10.0.0 Handle `$canceller` internally, use `cancel()` from the returned promise.
- * @since 7.1.0
  */
-function deferFind($array, callable $callback, $loop = null): Promise
+function deferFind($array, callable $callback, $loop, ?callable $canceller = null): ExtendedPromiseInterface
 {
     $cancelled = false;
-    $deferred = new Deferred(function () use (&$cancelled) {
+    $canceller ??= function () use (&$cancelled) {
         $cancelled = true;
-    });
+    };
+    $deferred = new Deferred($canceller);
     $iterator = new ArrayIterator($array);
-
-    $loop ??= Loop::get();
 
     $loop->addPeriodicTimer(0.001, function ($timer) use ($loop, $deferred, $iterator, $callback, &$cancelled) {
         if ($cancelled) {
@@ -330,27 +309,4 @@ function deferFind($array, callable $callback, $loop = null): Promise
     });
 
     return $deferred->promise();
-}
-
-/**
- * Attempts to return a resolved value from a synchronous promise.
- * Like await() but only for resolvable blocking promise without touching the loop.
- *
- * @param PromiseInterface $promiseInterface The synchronous promise.
- *
- * @return mixed null if failed to return.
- *
- * @see \React\Async\await() for asynchronous promise.
- *
- * @since 10.0.0
- */
-function nowait(PromiseInterface $promiseInterface)
-{
-    $resolved = null;
-
-    $promiseInterface->then(static function ($value) use (&$resolved) {
-        return $resolved = $value;
-    });
-
-    return $resolved;
 }

@@ -16,23 +16,20 @@ use Discord\Parts\Guild\Integration;
 use Discord\Repository\AbstractRepository;
 
 /**
- * Contains integrations on a guild.
+ * Contains integrations to guilds.
  *
- * @see Integration
+ * @see \Discord\Parts\Guild\Integration
  * @see \Discord\Parts\Guild\Guild
  *
- * @since 7.0.0
- *
- * @method Integration|null get(string $discrim, $key)
- * @method Integration|null pull(string|int $key, $default = null)
- * @method Integration|null first()
- * @method Integration|null last()
- * @method Integration|null find()
+ * @method Integration|null get(string $discrim, $key)  Gets an item from the collection.
+ * @method Integration|null first()                     Returns the first element of the collection.
+ * @method Integration|null pull($key, $default = null) Pulls an item from the repository, removing and returning the item.
+ * @method Integration|null find(callable $callback)    Runs a filter callback over the repository.
  */
 class IntegrationRepository extends AbstractRepository
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     protected $endpoints = [
         'all' => Endpoint::GUILD_INTEGRATIONS,
@@ -40,7 +37,7 @@ class IntegrationRepository extends AbstractRepository
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     protected $class = Integration::class;
 }

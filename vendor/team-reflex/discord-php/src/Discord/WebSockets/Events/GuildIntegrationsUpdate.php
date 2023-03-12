@@ -12,19 +12,18 @@
 namespace Discord\WebSockets\Events;
 
 use Discord\WebSockets\Event;
+use Discord\Helpers\Deferred;
 
 /**
- * @link https://discord.com/developers/docs/topics/gateway-events#guild-integrations-update
- *
- * @since 5.0.0
+ * @see https://discord.com/developers/docs/topics/gateway#guild-integrations-update
  */
 class GuildIntegrationsUpdate extends Event
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
-    public function handle($data)
+    public function handle(Deferred &$deferred, $data): void
     {
-        return yield $this->discord->guilds->cacheGet($data->guild_id) ?? $data;
+        $deferred->resolve($this->discord->guilds->get('id', $data->guild_id));
     }
 }

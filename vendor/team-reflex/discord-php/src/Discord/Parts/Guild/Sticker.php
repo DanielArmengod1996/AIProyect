@@ -12,28 +12,24 @@
 namespace Discord\Parts\Guild;
 
 use Discord\Parts\Part;
-use Discord\Parts\User\User;
 
 /**
  * A sticker that can be sent in a Discord message.
  *
- * @link https://discord.com/developers/docs/resources/sticker#sticker-object-sticker-structure
+ * @see https://discord.com/developers/docs/resources/sticker#sticker-object-sticker-structure
  *
- * @since 7.0.0 Namespace moved from Channel to Guild
- * @since 6.0.0
- *
- * @property      string      $id          The identifier for the sticker.
- * @property      string|null $pack_id     For standard stickers, id of the pack the sticker is from.
- * @property      string      $name        The name of the sticker.
- * @property      ?string     $description The description of the sticker.
- * @property      array       $tags        Autocomplete/suggestion tags for the sticker (max 200 characters).
- * @property      int         $type        The type of sticker.
- * @property      int         $format_type The type of sticker format.
- * @property      bool|null   $available   Whether this guild sticker can be used, may be false due to loss of Server Boosts.
- * @property      string|null $guild_id    The identifier of the guild that owns the sticker.
- * @property-read Guild|null  $guild       The guild that owns the sticker.
- * @property      User|null   $user        The user that uploaded the guild sticker.
- * @property      int|null    $sort_value  The standard sticker's sort order within its pack.
+ * @property string      $id          The identifier for the sticker.
+ * @property string|null $pack_id     For standard stickers, id of the pack the sticker is from.
+ * @property string      $name        The name of the sticker.
+ * @property string      $description The description of the sticker.
+ * @property array       $tags        Autocomplete/suggestion tags for the sticker (max 200 characters).
+ * @property int         $type        The type of sticker.
+ * @property int         $format_type The type of sticker format.
+ * @property bool|null   $available   Whether this guild sticker can be used, may be false due to loss of Server Boosts.
+ * @property string|null $guild_id    The identifier of the guild that owns the sticker.
+ * @property Guild|null  $guild       The guild that owns the sticker.
+ * @property User|null   $user        The user that uploaded the guild sticker.
+ * @property int|null    $sort_value  The standard sticker's sort order within its pack.
  */
 class Sticker extends Part
 {
@@ -45,12 +41,13 @@ class Sticker extends Part
     public const FORMAT_TYPE_LOTTIE = 3;
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     protected $fillable = [
         'id',
         'name',
         'tags',
+        'asset',
         'type',
         'format_type',
         'description',
@@ -62,7 +59,7 @@ class Sticker extends Part
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function isPartial(): bool
     {
@@ -94,7 +91,7 @@ class Sticker extends Part
      *
      * @return User|null
      */
-    protected function getUserAttribute(): ?User
+    protected function getUserAttribute(): ?Part
     {
         if (! isset($this->attributes['user'])) {
             return null;
@@ -104,7 +101,7 @@ class Sticker extends Part
             return $user;
         }
 
-        return $this->factory->part(User::class, (array) $this->attributes['user'], true);
+        return $this->factory->part(User::class, $this->attributes['user'], true);
     }
 
     /**
@@ -138,33 +135,26 @@ class Sticker extends Part
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @link https://discord.com/developers/docs/resources/sticker#modify-guild-sticker-json-params
+     * @inheritdoc
      */
     public function getUpdatableAttributes(): array
     {
-        $attr = [
+        return [
             'name' => $this->name,
+            'description' => $this->description ?? null,
             'tags' => $this->attributes['tags'],
         ];
-
-        if (array_key_exists('description', $this->attributes)) {
-            $attr['description'] = $this->description;
-        }
-
-        return $attr;
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function getRepositoryAttributes(): array
     {
         if ($this->type == self::TYPE_GUILD) {
             return [
-                'guild_id' => $this->guild_id,
                 'sticker_id' => $this->id,
+                'guild_id' => $this->guild_id,
             ];
         }
 

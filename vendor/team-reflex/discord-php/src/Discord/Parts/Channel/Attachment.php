@@ -16,9 +16,7 @@ use Discord\Parts\Part;
 /**
  * A message attachment.
  *
- * @link https://discord.com/developers/docs/resources/channel#attachment-object
- *
- * @since 7.0.0
+ * @see https://discord.com/developers/docs/resources/channel#attachment-object
  *
  * @property string      $id           Attachment ID.
  * @property string      $filename     Name of file attached.
@@ -34,7 +32,7 @@ use Discord\Parts\Part;
 class Attachment extends Part
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     protected $fillable = [
         'id',

@@ -13,46 +13,40 @@ namespace Discord\WebSockets\Events;
 
 use Discord\Helpers\Collection;
 use Discord\WebSockets\Event;
-use Discord\Parts\Guild\Guild;
+use Discord\Helpers\Deferred;
 use Discord\Parts\Guild\Sticker;
 
-/**
- * @link https://discord.com/developers/docs/topics/gateway-events#guild-stickers-update
- *
- * @since 7.0.0
- */
 class GuildStickersUpdate extends Event
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
-    public function handle($data)
+    public function handle(Deferred &$deferred, $data): void
     {
         $oldStickers = Collection::for(Sticker::class);
         $stickerParts = Collection::for(Sticker::class);
 
-        /** @var ?Guild */
-        if ($guild = yield $this->discord->guilds->cacheGet($data->guild_id)) {
+        if ($guild = $this->discord->guilds->get('id', $data->guild_id)) {
             $oldStickers->merge($guild->stickers);
             $guild->stickers->clear();
         }
 
-        foreach ($data->stickers as &$sticker) {
+        foreach ($data->stickers as $sticker) {
             if (isset($sticker->user)) {
                 // User caching from sticker uploader
                 $this->cacheUser($sticker->user);
             } elseif ($oldSticker = $oldStickers->offsetGet($sticker->id)) {
-                if ($uploader = $oldSticker->user) {
-                    $sticker->user = (object) $uploader->getRawAttributes();
-                }
+                $sticker->user = $oldSticker->user;
             }
-            $stickerParts->pushItem($this->factory->part(Sticker::class, (array) $sticker, true));
+            /** @var Sticker */
+            $stickerPart = $this->factory->create(Sticker::class, $sticker, true);
+            $stickerParts->pushItem($stickerPart);
         }
 
-        if (isset($guild)) {
-            yield $guild->stickers->cache->setMultiple($stickerParts->toArray());
+        if ($guild) {
+            $guild->stickers->merge($stickerParts);
         }
 
-        return [$stickerParts, $oldStickers];
+        $deferred->resolve([$stickerParts, $oldStickers]);
     }
 }

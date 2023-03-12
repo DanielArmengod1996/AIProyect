@@ -12,33 +12,30 @@
 namespace Discord\WebSockets\Events;
 
 use Discord\WebSockets\Event;
-use Discord\Parts\Guild\Guild;
+use Discord\Helpers\Deferred;
 use Discord\Parts\Guild\Integration;
 
 /**
- * @link https://discord.com/developers/docs/topics/gateway-events#integration-create
- *
- * @since 7.0.0
+ * @see https://discord.com/developers/docs/topics/gateway#integration-create
  */
 class IntegrationCreate extends Event
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
-    public function handle($data)
+    public function handle(Deferred &$deferred, $data): void
     {
         /** @var Integration */
-        $integrationPart = $this->factory->part(Integration::class, (array) $data, true);
+        $integrationPart = $this->factory->create(Integration::class, $data, true);
 
-        /** @var ?Guild */
-        if ($guild = yield $this->discord->guilds->cacheGet($data->guild_id)) {
-            $guild->integrations->set($data->id, $integrationPart);
+        if ($guild = $this->discord->guilds->get('id', $data->guild_id)) {
+            $guild->integrations->pushItem($integrationPart);
         }
 
         if (isset($data->user)) {
             $this->cacheUser($data->user);
         }
 
-        return $integrationPart;
+        $deferred->resolve($integrationPart);
     }
 }

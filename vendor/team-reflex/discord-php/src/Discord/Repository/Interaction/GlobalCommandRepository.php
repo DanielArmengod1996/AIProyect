@@ -18,21 +18,18 @@ use Discord\Repository\AbstractRepository;
 /**
  * Contains application global commands.
  *
- * @see Command
+ * @see \Discord\Parts\Interactions\Command\Command
  * @see \Discord\Parts\Guild\Guild
  *
- * @since 7.0.0
- *
- * @method Command|null get(string $discrim, $key)
- * @method Command|null pull(string|int $key, $default = null)
- * @method Command|null first()
- * @method Command|null last()
- * @method Command|null find()
+ * @method Command|null get(string $discrim, $key)  Gets an item from the collection.
+ * @method Command|null first()                     Returns the first element of the collection.
+ * @method Command|null pull($key, $default = null) Pulls an item from the repository, removing and returning the item.
+ * @method Command|null find(callable $callback)    Runs a filter callback over the repository.
  */
 class GlobalCommandRepository extends AbstractRepository
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     protected $endpoints = [
         'all' => Endpoint::GLOBAL_APPLICATION_COMMANDS,
@@ -43,7 +40,7 @@ class GlobalCommandRepository extends AbstractRepository
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     protected $class = Command::class;
 }

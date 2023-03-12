@@ -12,32 +12,32 @@
 namespace Discord\WebSockets\Events;
 
 use Discord\WebSockets\Event;
+use Discord\Helpers\Deferred;
 use Discord\Parts\Guild\AutoModeration\Rule;
-use Discord\Parts\Guild\Guild;
 
 /**
- * @link https://discord.com/developers/docs/topics/gateway-events#auto-moderation-rule-delete
- *
- * @since 7.1.0
+ * @see https://discord.com/developers/docs/topics/gateway#auto-moderation-rule-delete
  */
 class AutoModerationRuleDelete extends Event
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
-    public function handle($data)
+    public function handle(Deferred &$deferred, $data): void
     {
-        $rulePart = null;
+        $oldRule = null;
 
-        /** @var ?Guild */
-        if ($guild = yield $this->discord->guilds->cacheGet($data->guild_id)) {
-            /** @var ?Rule */
-            if ($rulePart = yield $guild->auto_moderation_rules->cachePull($data->id)) {
-                $rulePart->fill((array) $data);
-                $rulePart->created = false;
+        if ($guild = $this->discord->guilds->get('id', $data->guild_id)) {
+            if ($oldRule = $guild->auto_moderation_rules->pull($data->id)) {
+                $oldRule->created = false;
             }
         }
 
-        return $rulePart ?? $this->factory->part(Rule::class, (array) $data);
+        if (! $oldRule) {
+            /** @var Rule */
+            $oldRule = $this->factory->create(Rule::class, $data, false);
+        }
+
+        $deferred->resolve($oldRule);
     }
 }

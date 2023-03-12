@@ -16,8 +16,6 @@ use React\Promise\ExtendedPromiseInterface;
 
 /**
  * Wrapper for extended promisor interface. Work-around until react/promise v3.0.
- *
- * @since 5.0.12
  */
 class Deferred extends ReactDeferred implements ExtendedPromisorInterface
 {

@@ -11,29 +11,24 @@
 
 namespace Discord\WebSockets\Events;
 
-use Discord\Parts\Channel\Channel;
-use Discord\Parts\Guild\Guild;
+use Discord\Helpers\Deferred;
 use Discord\WebSockets\Event;
 
 /**
- * @link https://discord.com/developers/docs/topics/gateway-events#thread-delete
- *
- * @since 7.0.0
+ * @see https://discord.com/developers/docs/topics/gateway#thread-delete
  */
 class ThreadDelete extends Event
 {
-    public function handle($data)
+    public function handle(Deferred &$deferred, $data)
     {
-        $threadPart = null;
+        $thread = null;
 
-        /** @var ?Guild */
-        if ($guild = yield $this->discord->guilds->cacheGet($data->guild_id)) {
-            /** @var ?Channel */
-            if ($parent = yield $guild->channels->cacheGet($data->parent_id)) {
-                $threadPart = yield $parent->threads->cachePull($data->id);
+        if ($guild = $this->discord->guilds->get('id', $data->guild_id)) {
+            if ($parent = $guild->channels->get('id', $data->parent_id)) {
+                $thread = $parent->threads->pull($data->id);
             }
         }
 
-        return $threadPart ?? $data;
+        $deferred->resolve($thread);
     }
 }
