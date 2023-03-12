@@ -59,8 +59,7 @@
 		    if(isset($_POST['validarDiscord'])) {
 
             require_once 'Discord/Discord.php';
-            require_once 'confFile.php';
-            
+
 
           }
         } catch(Exception $e) {
