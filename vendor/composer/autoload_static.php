@@ -16,9 +16,8 @@ class ComposerStaticInitfc387c65a4a0d4e42e2e0b38aa3c0622
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         'a1105708a18b76903365ca1c4aa61b02' => __DIR__ . '/..' . '/symfony/translation/Resources/functions.php',
-        '49d7e2e91a66e18467cc8d8b8b02459b' => __DIR__ . '/..' . '/mollie/polyfill-libsodium/bootstrap.php',
         '3be16222a6efa6dd226a219eaaff823b' => __DIR__ . '/..' . '/ratchet/pawl/src/functions_include.php',
-        '83835a8f9e1906eeec7f4923b03042b8' => __DIR__ . '/..' . '/react/partial/src/functions.php',
+        'c4e03ecd470d2a87804979c0a8152284' => __DIR__ . '/..' . '/react/async/src/functions_include.php',
         '864b292aadc96fda0e2642b894a38d16' => __DIR__ . '/..' . '/team-reflex/discord-php/src/Discord/functions.php',
     );
 
@@ -39,7 +38,6 @@ class ComposerStaticInitfc387c65a4a0d4e42e2e0b38aa3c0622
             'React\\Promise\\Timer\\' => 20,
             'React\\Promise\\Stream\\' => 21,
             'React\\Promise\\' => 14,
-            'React\\Partial\\' => 14,
             'React\\Http\\' => 11,
             'React\\EventLoop\\' => 16,
             'React\\Dns\\' => 10,
@@ -51,6 +49,7 @@ class ComposerStaticInitfc387c65a4a0d4e42e2e0b38aa3c0622
         ),
         'P' => 
         array (
+            'Psr\\SimpleCache\\' => 16,
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
         ),
@@ -122,10 +121,6 @@ class ComposerStaticInitfc387c65a4a0d4e42e2e0b38aa3c0622
         array (
             0 => __DIR__ . '/..' . '/react/promise/src',
         ),
-        'React\\Partial\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/react/partial/src',
-        ),
         'React\\Http\\' => 
         array (
             0 => __DIR__ . '/..' . '/react/http/src',
@@ -158,14 +153,18 @@ class ComposerStaticInitfc387c65a4a0d4e42e2e0b38aa3c0622
         array (
             0 => __DIR__ . '/..' . '/ratchet/pawl/src',
         ),
+        'Psr\\SimpleCache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/simple-cache/src',
+        ),
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/src',
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
         'Monolog\\' => 
         array (
