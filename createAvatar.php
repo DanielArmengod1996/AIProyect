@@ -61,11 +61,6 @@
             
             include __DIR__.'vendor/autoload.php';
 
-          // Import classes, install a LSP such as Intelephense to auto complete imports
-          use Discord\Discord;
-          use Discord\Parts\Channel\Message;
-          use Discord\WebSockets\Intents;
-
           // Create a $discord BOT
           $discord = new Discord([
               'token' => $discordBotToken, // Put your Bot token here from https://discord.com/developers/applications/
