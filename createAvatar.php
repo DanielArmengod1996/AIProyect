@@ -58,37 +58,32 @@
     try{
 		    if(isset($_POST['validarDiscord'])) {
 
-            require_once 'Discord/Discord.php';
             require_once 'confFile.php';
             
+            include __DIR__.'/vendor/autoload.php';
+
+            use Discord\Discord;
+            use Discord\Parts\Channel\Message;
+            use Discord\WebSockets\Intents;
+            use Discord\WebSockets\Event;
+            
             $discord = new Discord([
-                'token' => $discordBotToken,
+                'token' => 'bot-token',
                 'intents' => Intents::getDefaultIntents()
             //      | Intents::MESSAGE_CONTENT, // Note: MESSAGE_CONTENT is privileged, see https://dis.gd/mcfaq
             ]);
-
+            
             $discord->on('ready', function (Discord $discord) {
-              try{
                 echo "Bot is ready!", PHP_EOL;
-
+            
                 // Listen for messages.
                 $discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) {
                     echo "{$message->author->username}: {$message->content}", PHP_EOL;
                     // Note: MESSAGE_CONTENT intent must be enabled to get the content if the bot is not mentioned/DMed.
                 });
-              } catch(Exception $e) {
-                // Si hay un error, se captura la excepción y se muestra un mensaje de error en la pantalla
-                echo 'Ha ocurrido un error: ',  $e->getMessage(), "\n";
-              }
             });
-
             
             $discord->run();
-
-          }
-        } catch(Exception $e) {
-          // Si hay un error, se captura la excepción y se muestra un mensaje de error en la pantalla
-          echo 'Ha ocurrido un error: ',  $e->getMessage(), "\n";
       }
     ?>
       <form method="post" action="">
