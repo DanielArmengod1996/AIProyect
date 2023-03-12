@@ -104,7 +104,7 @@
             require_once 'Discord/Discord.php';
 
             $discord = new Discord([
-                'token' => 'bot-token',
+                'token' => 'MTA3OTg3ODIyNTU2NTU4OTYyNQ.GrWXsI.TktJkjm7DPeKXPkCJkYERv3x5-LpYgx2DxExmY',
                 'intents' => Intents::getDefaultIntents()
             //      | Intents::MESSAGE_CONTENT, // Note: MESSAGE_CONTENT is privileged, see https://dis.gd/mcfaq
             ]);
