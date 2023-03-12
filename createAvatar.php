@@ -55,7 +55,6 @@
         </ul>
         
         <?php
-    try{
 		    if(isset($_POST['validarDiscord'])) {
 
             require_once 'confFile.php';
