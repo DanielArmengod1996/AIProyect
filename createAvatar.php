@@ -54,13 +54,7 @@
         <?php } ?>
         </ul>
         
-
-      <form method="post" action="">
-		    <input type="submit" name="validarDiscord" value="Ejecutar función">
-      </form>
-    </div>
-    </div>
-    <?php
+        <?php
     try{
 		    if(isset($_POST['validarDiscord'])) {
 
@@ -91,6 +85,11 @@
           echo 'Ha ocurrido un error: ',  $e->getMessage(), "\n";
       }
     ?>
+      <form method="post" action="">
+		    <input type="submit" name="validarDiscord" value="Ejecutar función">
+      </form>
+    </div>
+    </div>
     <footer class="container py-5">
       <div class="row">
         <div class="col-12 col-md">
