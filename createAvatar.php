@@ -61,6 +61,7 @@
     </div>
     </div>
     <?php
+    try{
 		    if(isset($_POST['validarDiscord'])) {
 
             require_once 'Discord/Discord.php';
@@ -85,6 +86,10 @@
             $discord->run();
 
           }
+        } catch(Exception $e) {
+          // Si hay un error, se captura la excepción y se muestra un mensaje de error en la pantalla
+          echo 'Ha ocurrido un error: ',  $e->getMessage(), "\n";
+      }
     ?>
     <footer class="container py-5">
       <div class="row">
