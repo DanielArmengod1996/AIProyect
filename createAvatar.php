@@ -101,35 +101,28 @@
     </footer>
 
           <?php
-            require_once 'Discord/Discord.php';
-
-            // Get the user's Discord channel ID
-            $channelId = 'YOUR_DISCORD_CHANNEL_ID';
+            use Discord\Discord;
+            use Discord\Parts\Channel\Message;
+            use Discord\WebSockets\Intents;
+            use Discord\WebSockets\Event;
             
-            // Check if the avatar-submit button was pressed
-            if ($_POST['button-id'] === 'avatar-submit') {
-              // Check if an image was uploaded
-              if (isset($_FILES['img_upload']) && $_FILES['img_upload']['error'] === UPLOAD_ERR_OK) {
-                // Get the image file from the upload
-                $imageFile = $_FILES['img_upload']['tmp_name'];
+            $discord = new Discord([
+                'token' => 'bot-token',
+                'intents' => Intents::getDefaultIntents()
+            //      | Intents::MESSAGE_CONTENT, // Note: MESSAGE_CONTENT is privileged, see https://dis.gd/mcfaq
+            ]);
             
-                // Initialize the Discord client
-                $client = new Discord\Discord([
-                    'token' => 'YOUR_DISCORD_BOT_TOKEN',
-                ]);
+            $discord->on('ready', function (Discord $discord) {
+                echo "Bot is ready!", PHP_EOL;
             
-                // Upload the image to Discord
-                try {
-                    $channel = $client->getChannel($channelId);
-                    $channel->sendFile($imageFile);
-                    echo 'Image sent to Discord channel!';
-                } catch (Exception $e) {
-                    echo 'Error sending image: ' . $e->getMessage();
-                }
-              } else {
-                echo 'Error uploading image: ' . $_FILES['image']['error'];
-              }
-            }
+                // Listen for messages.
+                $discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) {
+                    echo "{$message->author->username}: {$message->content}", PHP_EOL;
+                    // Note: MESSAGE_CONTENT intent must be enabled to get the content if the bot is not mentioned/DMed.
+                });
+            });
+            
+            $discord->run();
             
           ?>
     <!-- Bootstrap core JavaScript
