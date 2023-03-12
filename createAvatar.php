@@ -56,6 +56,37 @@
         
         <?php
           if(isset($_POST['validarDiscord'])) {
+            // Replace <WEBHOOK_URL> with the actual URL of your Discord webhook
+            $webhook_url = "<WEBHOOK_URL>";
+
+            // Replace <MESSAGE_CONTENT> with the actual message you want to send
+            $message = array("content" => "<MESSAGE_CONTENT>");
+
+            // Encode the message as JSON
+            $json_data = json_encode($message);
+
+            // Set up the cURL request
+            $ch = curl_init($webhook_url);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+            curl_setopt($ch, CURLOPT_HEADER, 0);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+            // Execute the cURL request
+            $response = curl_exec($ch);
+
+            // Check for errors
+            if(curl_errno($ch)) {
+                echo 'Error:' . curl_error($ch);
+            } else {
+                echo 'Message sent to Discord channel.';
+            }
+
+            // Close the cURL session
+            curl_close($ch);
+            
           }
         ?>
       <form method="post" action="">
