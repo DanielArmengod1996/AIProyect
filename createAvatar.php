@@ -67,6 +67,7 @@
             ]);
 
             $discord->on('ready', function (Discord $discord) {
+              try{
                 echo "Bot is ready!", PHP_EOL;
 
                 // Listen for messages.
@@ -74,6 +75,10 @@
                     echo "{$message->author->username}: {$message->content}", PHP_EOL;
                     // Note: MESSAGE_CONTENT intent must be enabled to get the content if the bot is not mentioned/DMed.
                 });
+              } catch(Exception $e) {
+                // Si hay un error, se captura la excepción y se muestra un mensaje de error en la pantalla
+                echo 'Ha ocurrido un error: ',  $e->getMessage(), "\n";
+              }
             });
 
             
