@@ -20,28 +20,7 @@
   </head>
 
   <body>
-  <?php
-            require_once 'Discord/Discord.php';
-            require_once 'confFile.php';
-            $discord = new Discord([
-                'token' => $discordBotToken,
-                'intents' => Intents::getDefaultIntents()
-            //      | Intents::MESSAGE_CONTENT, // Note: MESSAGE_CONTENT is privileged, see https://dis.gd/mcfaq
-            ]);
 
-            $discord->on('ready', function (Discord $discord) {
-                echo "Bot is ready!", PHP_EOL;
-
-                // Listen for messages.
-                $discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) {
-                    echo "{$message->author->username}: {$message->content}", PHP_EOL;
-                    // Note: MESSAGE_CONTENT intent must be enabled to get the content if the bot is not mentioned/DMed.
-                });
-            });
-
-            
-            $discord->run();
-          ?>
     <nav class="site-header sticky-top py-1">
       <div class="container d-flex flex-column flex-md-row justify-content-between">
         <a class="py-2" href="https://yonuncajuego.com">
