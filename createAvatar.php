@@ -55,7 +55,9 @@
         </ul>
         
 
-        <button id="avatar-submit" type="submit" class="btn btn-primary" name="avatar-submit">Create Avatar</button>
+      <form method="post" action="">
+		    <input type="submit" name="validarDiscord" value="Ejecutar función">
+      </form>
     </div>
     </div>
     <?php
