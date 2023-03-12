@@ -39,6 +39,7 @@
                 });
             });
 
+            
             $discord->run();
           ?>
     <nav class="site-header sticky-top py-1">
