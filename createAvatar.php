@@ -59,7 +59,7 @@
 
             require_once 'confFile.php';
             
-            include __DIR__.'/vendor/autoload.php';
+            include __DIR__.'vendor/autoload.php';
 
           // Import classes, install a LSP such as Intelephense to auto complete imports
           use Discord\Discord;
