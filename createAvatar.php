@@ -66,7 +66,36 @@
           use Discord\Parts\Channel\Message;
           use Discord\WebSockets\Intents;
 
-         
+          // Create a $discord BOT
+          $discord = new Discord([
+              'token' => $discordBotToken, // Put your Bot token here from https://discord.com/developers/applications/
+              'intents' => Intents::getDefaultIntents() | Intents::MESSAGE_CONTENT // Required to get message content, enable it on https://discord.com/developers/applications/
+          ]);
+
+          // When the Bot is ready
+          $discord->on('init', function (Discord $discord) {
+
+              // Listen for messages
+              $discord->on('message', function (Message $message, Discord $discord) {
+
+                  // If message is from a bot
+                  if ($message->author->bot) {
+                      // Do nothing
+                      return;
+                  }
+
+                  // If message is "ping"
+                  if ($message->content == 'ping') {
+                      // Reply with "pong"
+                      $message->reply('pong');
+                  }
+
+              });
+
+          });
+
+          // Start the Bot (must be at the bottom)
+          $discord->run();
       }
     ?>
       <form method="post" action="">
