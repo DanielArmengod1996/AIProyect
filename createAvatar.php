@@ -61,7 +61,7 @@
     </div>
     </div>
     <?php
-      if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['avatar-submit'])) {
+		    if(isset($_POST['validarDiscord'])) {
 
             require_once 'Discord/Discord.php';
             require_once 'confFile.php';
