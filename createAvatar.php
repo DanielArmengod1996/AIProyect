@@ -101,7 +101,7 @@
     </footer>
 
           <?php
-            require_once 'vendor/autoload.php'; // Include the Discord PHP library
+            require_once 'Discord/Discord.php';
 
             // Get the user's Discord channel ID
             $channelId = 'YOUR_DISCORD_CHANNEL_ID';
