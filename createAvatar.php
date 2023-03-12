@@ -57,10 +57,10 @@
         <?php
           if(isset($_POST['validarDiscord'])) {
             // Replace <WEBHOOK_URL> with the actual URL of your Discord webhook
-            $webhook_url = "<WEBHOOK_URL>";
+            $webhook_url = "https://discord.com/api/webhooks/1084588167178498088/w1KXbLl_v0MNyx_e3rS5VSFlb-6JrFIw2GcZR4DWtgl76YnlSzXSbOyzVJ71Jhu1hTqx";
 
             // Replace <MESSAGE_CONTENT> with the actual message you want to send
-            $message = array("content" => "<MESSAGE_CONTENT>");
+            $message = array("content" => "buenas tardes, me voy a hacer una paja, hahjajjajaja");
 
             // Encode the message as JSON
             $json_data = json_encode($message);
@@ -86,7 +86,7 @@
 
             // Close the cURL session
             curl_close($ch);
-            
+
           }
         ?>
       <form method="post" action="">
