@@ -80,7 +80,7 @@
         </ul>
         
 
-        <button id="avatar-submit" type="submit" class="btn btn-primary">Create Avatar</button>
+        <button id="avatar-submit" type="button" class="btn btn-primary">Create Avatar</button>
     </div>
     </div>
 
