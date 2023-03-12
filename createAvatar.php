@@ -35,28 +35,28 @@
     </nav>
 
     <div class="position-relative overflow-hidden p-5 p-md-5 m-md-3 text-center bg-light">
-	<div id="avatar-container">
-      <?php if ($error) echo "<p id='error'>$error</p>"; ?>
+    <div id="avatar-container">
+        <?php if ($error) echo "<p id='error'>$error</p>"; ?>
 
-      <form class="custom-file" method='POST' id='imgForm' enctype='multipart/form-data'>
-          <label for='img_upload'>Image File: </label>
-          <input type='file' name='img_upload' id='img_upload'>
-          <input type='submit' value="Upload and Detect" name='upload_form_submitted'>
-      </form>
+        <form class="custom-file" method='POST' id='imgForm' enctype='multipart/form-data'>
+            <label for='img_upload'>Image File: </label>
+            <input type='file' name='img_upload' id='img_upload'>
+            <input type='submit' value="Upload and Detect" name='upload_form_submitted'>
+        </form>
 
-      <h2>Original Image</h2>
-      <?php echo $origImageHtml; ?>
+        <h2>Original Image</h2>
+        <?php echo $origImageHtml; ?>
 
-      <h2>Detected Features ( <?php echo $numFeatures; ?> )</h2>
-      <ul style="list-style-type:none">
-      <?php foreach ($detectedImagesHtml as $img) { ?>
-          <li><?php echo $img; ?></li>
-      <?php } ?>
-      </ul>
-      
+        <h2>Detected Features ( <?php echo $numFeatures; ?> )</h2>
+        <ul style="list-style-type:none">
+        <?php foreach ($detectedImagesHtml as $img) { ?>
+            <li><?php echo $img; ?></li>
+        <?php } ?>
+        </ul>
+        
 
-			<button id="avatar-submit" type="submit" class="btn btn-primary">Create Avatar</button>
-	</div>
+        <button id="avatar-submit" type="submit" class="btn btn-primary">Create Avatar</button>
+    </div>
     </div>
 
     <footer class="container py-5">
@@ -100,7 +100,37 @@
       </div>
     </footer>
 
+          <?php
+            // Get the button element
+            var button = document.getElementById('avatar-submit');
 
+            // Add a click event listener to the button
+            button.addEventListener('click', function() {
+              // Get the image file from the input element
+              var inputFile = document.getElementById('avatar-input').files[0];
+
+              // Create a FormData object and append the image file to it
+              var formData = new FormData();
+              formData.append('image', inputFile);
+
+              // Send a POST request to the server with the FormData
+              fetch('/upload-image.php', {
+                method: 'POST',
+                body: formData
+              })
+              .then(response => {
+                if (response.ok) {
+                  console.log('Image uploaded successfully');
+                } else {
+                  console.error('Error uploading image');
+                }
+              })
+              .catch(error => {
+                console.error('Error uploading image: ' + error.message);
+              });
+            });
+
+          ?>
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
