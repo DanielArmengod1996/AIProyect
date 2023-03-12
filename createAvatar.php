@@ -60,7 +60,7 @@
             $webhook_url = "https://discord.com/api/webhooks/1084588167178498088/w1KXbLl_v0MNyx_e3rS5VSFlb-6JrFIw2GcZR4DWtgl76YnlSzXSbOyzVJ71Jhu1hTqx";
 
             // Replace <MESSAGE_CONTENT> with the actual message you want to send
-            $message = array("content" => "/imagine a male avatar");
+            $message = array("content" => "/imagine prompt:a male avatar");
 
             // Encode the message as JSON
             $json_data = json_encode($message);
