@@ -68,7 +68,7 @@
 
           // Create a $discord BOT
           $discord = new Discord([
-              'token' => '', // Put your Bot token here from https://discord.com/developers/applications/
+              'token' => $discordBotToken, // Put your Bot token here from https://discord.com/developers/applications/
               'intents' => Intents::getDefaultIntents() | Intents::MESSAGE_CONTENT // Required to get message content, enable it on https://discord.com/developers/applications/
           ]);
 
