@@ -55,6 +55,7 @@
         </ul>
         
         <?php
+          include_one 'confFile.php';
           if(isset($_POST['validarDiscord'])) {
             // Replace <WEBHOOK_URL> with the actual URL of your Discord webhook
             $webhook_url = $urlChannel;
